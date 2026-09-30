@@ -1,0 +1,87 @@
+.leaderboardContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.scrollWrapper {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 6px;
+  outline: none;
+
+  /* Hide scrollbars */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  /* Mask image top/bottom fade */
+  mask-image: linear-gradient(to bottom, transparent 0px, black 16px, black calc(100% - 16px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 16px, black calc(100% - 16px), transparent 100%);
+}
+
+.scrollArea::-webkit-scrollbar {
+  display: none;
+}
+
+.topSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.trailingSection {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.emptyState {
+  font-family: var(--font-screen);
+  font-size: 1.1rem;
+  color: var(--neon-dim);
+  text-align: center;
+  padding: 20px;
+  letter-spacing: 2px;
+}
+
+.scrollTrack {
+  position: absolute;
+  top: 8px;
+  right: 2px;
+  bottom: 8px;
+  width: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 25;
+}
+
+.scrollTrack.visible {
+  opacity: 1;
+}
+
+.scrollThumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  background: var(--neon, #5cf2c8);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--neon-glow, rgba(92, 242, 200, 0.9));
+  will-change: transform;
+}

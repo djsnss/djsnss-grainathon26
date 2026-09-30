@@ -1,0 +1,30 @@
+.tapeContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-1.5deg);
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+  margin: 4px 0 8px 0;
+}
+
+.tapeSvg {
+  position: absolute;
+  width: 105%;
+  height: 120%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tapeText {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-tape);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--tape-ink);
+  padding: 4px 28px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-transform: uppercase;
+}

@@ -1,0 +1,46 @@
+:root {
+  /* Wood & Cabinet Materials */
+  --wood-dark: #2c180b;
+  --wood-mid: #4a2b16;
+  --wood-light: #704323;
+  --wood-highlight: #8d5730;
+  --wood-outline: #180b04;
+
+  /* Metallic & Plastic Accents */
+  --bezel: #120d09;
+  --bezel-inner: #0a0705;
+  --brass: #d4af37;
+  --brass-light: #f3e5ab;
+  --chrome: #b0bec5;
+  --knob-dark: #1b1b1b;
+  --knob-mid: #2d2d2d;
+  --knob-light: #484848;
+
+  /* CRT Screen Palette */
+  --screen-bg-1: #0e3a3d;
+  --screen-bg-2: #05191c;
+  --neon: #5cf2c8;
+  --neon-bright: #84ffdc;
+  --neon-glow: rgba(92, 242, 200, 0.55);
+  --neon-dim: rgba(92, 242, 200, 0.2);
+  --label-text: #b7f5e6;
+
+  /* Rank Tints */
+  --gold: #ffd166;
+  --gold-glow: rgba(255, 209, 102, 0.6);
+  --silver: #e2e8f0;
+  --silver-glow: rgba(226, 232, 240, 0.5);
+  --bronze: #e09f67;
+  --bronze-glow: rgba(224, 159, 103, 0.5);
+
+  /* Tape & Paper */
+  --tape: #ebdcb9;
+  --tape-dark: #cca46e;
+  --tape-ink: #1f1d18;
+
+  /* Typography */
+  --font-title: 'Gochi Hand', 'Sriracha', cursive;
+  --font-screen: 'Chakra Petch', 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', 'VT323', monospace;
+  --font-tape: 'Special Elite', 'Permanent Marker', cursive;
+}

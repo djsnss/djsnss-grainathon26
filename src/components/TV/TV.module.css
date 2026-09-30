@@ -1,0 +1,18 @@
+.tvViewportContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1160px;
+  max-height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.tvScalableWrapper {
+  transform-origin: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-out;
+}

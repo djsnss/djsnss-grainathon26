@@ -1,0 +1,24 @@
+.speakerFrame {
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(180deg, #18110b 0%, #0d0906 100%);
+  border-radius: 8px;
+  border: 2px solid #362417;
+  box-shadow: 
+    inset 0 3px 6px rgba(0, 0, 0, 0.9),
+    0 1px 2px rgba(255, 255, 255, 0.05);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slat {
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(180deg, #070503 0%, #1c130d 50%, #070503 100%);
+  border-radius: 2px;
+  box-shadow: 
+    inset 1px 1px 2px rgba(0,0,0,0.9),
+    1px 0 1px rgba(255,255,255,0.05);
+}

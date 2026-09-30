@@ -1,0 +1,82 @@
+.sidePanel {
+  position: relative;
+  width: 190px;
+  height: 520px;
+  background: linear-gradient(180deg, #2b1b11 0%, #1c1008 50%, #24140b 100%);
+  border-radius: 12px;
+  border: 3px solid #140b06;
+  box-shadow: 
+    inset 0 4px 12px rgba(0, 0, 0, 0.9),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.8),
+    1px 0 2px rgba(255, 255, 255, 0.08);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.knobStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.buttonRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding: 8px 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid #362417;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.pushButton {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e2e8f0 0%, #94a3b8 50%, #475569 100%);
+  border: 2px solid #1e293b;
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.8),
+    inset 0 1px 2px rgba(255,255,255,0.8);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.pushButton:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.9);
+}
+
+.toggleSwitch {
+  width: 28px;
+  height: 16px;
+  background: #0f172a;
+  border-radius: 10px;
+  border: 1px solid #c9a24b;
+  position: relative;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.toggleHandle {
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 35% 35%, #ffd166 0%, #c9a24b 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  transition: transform 0.2s ease;
+}
+
+.screwsSvg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}

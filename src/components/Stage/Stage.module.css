@@ -1,0 +1,72 @@
+.stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0b0d10;
+}
+
+.bgContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.65) contrast(1.15) saturate(1.1);
+  transition: opacity 0.5s ease;
+}
+
+.fallbackGrid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 50% 40%, rgba(92, 242, 200, 0.08) 0%, rgba(5, 25, 28, 0.95) 75%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  z-index: 1;
+}
+
+.vignetteOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 20%, rgba(5, 5, 8, 0.65) 90%);
+}
+
+.contentWrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.creditBadge {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  z-index: 20;
+  font-family: var(--font-screen);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.creditBadge span {
+  color: var(--neon);
+  opacity: 0.7;
+}

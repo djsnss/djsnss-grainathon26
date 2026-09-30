@@ -1,0 +1,19 @@
+.headerWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mainTitle {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 5px;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.9),
+    0 0 20px var(--neon-glow);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}

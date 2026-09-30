@@ -1,0 +1,50 @@
+.trailingRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 4px 12px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  background: rgba(10, 35, 38, 0.4);
+  transition: background 0.15s ease;
+}
+
+.trailingRow:hover {
+  background: rgba(92, 242, 200, 0.08);
+}
+
+.rankBadge {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--label-text);
+  width: 24px;
+  opacity: 0.85;
+}
+
+.rowName {
+  font-family: var(--font-screen);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.dottedLeader {
+  flex: 1;
+  border-bottom: 2px dotted rgba(92, 242, 200, 0.35);
+  height: 2px;
+  margin: 0 8px;
+}
+
+.rowScore {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--neon);
+  letter-spacing: 1px;
+}

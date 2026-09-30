@@ -1,0 +1,66 @@
+.cabinetWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.woodBody {
+  position: relative;
+  width: 960px;
+  height: 580px;
+  background: linear-gradient(135deg, rgba(110, 66, 37, 0.90) 0%, rgba(74, 43, 22, 0.90) 40%, rgba(48, 26, 11, 0.90) 100%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 28px;
+  border: 4px solid #180b04;
+  box-shadow: 
+    0 24px 48px rgba(0, 0, 0, 0.85),
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    inset 0 4px 6px rgba(255, 255, 255, 0.25),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.7);
+  padding: 24px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.topEdgeHighlight {
+  position: absolute;
+  top: 4px;
+  left: 30px;
+  right: 30px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.woodGrainTexture {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+}
+
+.feetContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 720px;
+  margin-top: -6px;
+  z-index: -1;
+}
+
+.stubbyFoot {
+  width: 70px;
+  height: 24px;
+  background: linear-gradient(180deg, #2c180b 0%, #120904 100%);
+  border-radius: 0 0 10px 10px;
+  border: 2px solid #0f0602;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.9),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}

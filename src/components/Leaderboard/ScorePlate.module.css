@@ -1,0 +1,133 @@
+.scorePlateWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.scorePlateWrapper:hover {
+  transform: translateX(4px);
+}
+
+.rankToken {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0b2b2e;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.7),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.rankToken1 {
+  background: radial-gradient(circle at 35% 35%, #ffe49e 0%, #ffd166 60%, #cc9a24 100%);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.rankToken2 {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cfd8dc 60%, #90a4ae 100%);
+  box-shadow: 0 0 10px var(--silver-glow);
+}
+
+.rankToken3 {
+  background: radial-gradient(circle at 35% 35%, #f4b486 0%, #d08a5b 60%, #945226 100%);
+  box-shadow: 0 0 10px var(--bronze-glow);
+}
+
+.platesContainer {
+  position: relative;
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  height: 48px;
+}
+
+.rank1Height {
+  height: 54px;
+}
+
+.rank1Wrapper {
+  margin-top: 12px;
+}
+
+.namePlate,
+.scorePlate {
+  position: relative;
+  background: radial-gradient(ellipse at 50% 50%, #0d383b 0%, #061d1f 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.namePlate {
+  flex: 1;
+  border-radius: 8px;
+  overflow: visible;
+  --crown-offset-x: -14px;
+  --crown-offset-y: -16px;
+  --crown-tilt: -24deg;
+  --crown-size: 34px;
+}
+
+.scorePlate {
+  width: 130px;
+  border-radius: 8px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.plateSvgBackground {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.itemName {
+  font-family: var(--font-screen);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 2;
+}
+
+.itemScore {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--neon-bright);
+  text-shadow: 0 0 10px var(--neon-glow);
+  letter-spacing: 1px;
+  z-index: 2;
+}
+
+.crownBadge {
+  position: absolute;
+  left: var(--crown-offset-x);
+  top: var(--crown-offset-y);
+  width: var(--crown-size);
+  height: auto;
+  transform: rotate(var(--crown-tilt));
+  pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}

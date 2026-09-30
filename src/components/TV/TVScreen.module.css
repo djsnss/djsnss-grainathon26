@@ -1,0 +1,72 @@
+.screenBezelFrame {
+  position: relative;
+  width: 710px;
+  height: 520px;
+  background: linear-gradient(145deg, rgba(27, 20, 14, 0.75) 0%, rgba(13, 9, 6, 0.82) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 44px;
+  padding: 24px;
+  border: 4px solid #090604;
+  box-shadow: 
+    inset 0 8px 16px rgba(0, 0, 0, 0.85),
+    inset 0 -6px 12px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brassTrim {
+  position: absolute;
+  inset: 12px;
+  border-radius: 38px;
+  border: 1.5px solid #856a2f;
+  pointer-events: none;
+  opacity: 0.65;
+  box-shadow: inset 0 0 4px rgba(201, 162, 75, 0.3);
+}
+
+.crtGlassArea {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 45%, rgba(20, 73, 76, 0.38) 0%, rgba(11, 43, 46, 0.58) 60%, rgba(4, 18, 20, 0.78) 100%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 
+    inset 0 0 50px rgba(0, 0, 0, 0.75),
+    0 0 15px rgba(92, 242, 200, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.screenInnerContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 20px 24px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.osdBadge {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 40;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #5cf2c8;
+  background: rgba(4, 18, 20, 0.75);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--neon);
+  box-shadow: 0 0 10px var(--neon-glow);
+  letter-spacing: 2px;
+  pointer-events: none;
+}

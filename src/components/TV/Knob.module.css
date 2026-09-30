@@ -1,0 +1,106 @@
+.knobContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.brassCollar {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f7e6a5 0%, #c9a24b 50%, #684f1b 100%);
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.7),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.knobButton {
+  position: relative;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  transform-origin: center center;
+  transition: box-shadow 0.2s ease;
+}
+
+.knobButton:hover {
+  filter: drop-shadow(0 0 6px rgba(201, 162, 75, 0.5));
+}
+
+.knobButton:focus-visible {
+  outline: 3px solid var(--neon);
+  outline-offset: 4px;
+}
+
+.knobButton:active {
+  /* scale handled by framer-motion */
+}
+
+.tuningButton {
+  touch-action: none;
+  cursor: grab;
+}
+
+.held {
+  cursor: grabbing !important;
+  filter: drop-shadow(0 0 10px var(--neon, #5cf2c8));
+}
+
+.knobBody {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+}
+
+.ticksContainer {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.tickDot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #c9a24b;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  transform: translate(-50%, -50%);
+}
+
+.tickNumber {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #cca46e;
+  transform: translate(-50%, -50%);
+}
+
+.knobLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #c9a24b;
+  letter-spacing: 1px;
+  margin-top: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
