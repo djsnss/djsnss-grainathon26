@@ -4,14 +4,15 @@ export { CHANNELS };
 
 export const leaderboardData = {
   topDepartments: [
-    { id: 1, code: 'AIML', name: 'AIML', score: 1250 },
-    { id: 2, code: 'COMPS', name: 'COMPS', score: 1120 },
-    { id: 3, code: 'IT', name: 'IT', score: 980 },
-    { id: 4, code: 'DS', name: 'DS', score: 860 },
-    { id: 5, code: 'EXTC', name: 'EXTC', score: 740 },
-    { id: 6, code: 'MECH', name: 'MECH', score: 610 },
-    { id: 7, code: 'ICB', name: 'ICB', score: 540 },
-    { id: 8, code: 'AIDS', name: 'AIDS', score: 420 }
+    { id: 1, code: 'AIML',     name: 'AIML',     score: 1250 },
+    { id: 2, code: 'COMPS',    name: 'COMPS',    score: 1120 },
+    { id: 3, code: 'IT',       name: 'IT',       score: 980  },
+    { id: 4, code: 'DS',       name: 'DS',       score: 860  },
+    { id: 5, code: 'EXTC',     name: 'EXTC',     score: 740  },
+    { id: 6, code: 'MECH',     name: 'MECH',     score: 610  },
+    { id: 7, code: 'ICB',      name: 'ICB',      score: 540  },
+    { id: 8, code: 'AIDS',     name: 'AIDS',     score: 420  },
+    { id: 9, code: 'OUTSIDER', name: 'OUTSIDER', score: 310  }
   ],
   topCommittees: [
     { id: 1, name: 'Rotaract Club NSS', score: 980 },

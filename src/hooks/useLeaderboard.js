@@ -40,7 +40,7 @@ export function useLeaderboard(dataKey = 'topDepartments') {
   }, [data, dataKey]);
 
   const topThree = useMemo(() => sortedList.slice(0, 3), [sortedList]);
-  const trailingRows = useMemo(() => sortedList.slice(3, 8), [sortedList]);
+  const trailingRows = useMemo(() => sortedList.slice(3, 9), [sortedList]);
 
   return {
     items: sortedList,

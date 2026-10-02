@@ -10,8 +10,9 @@ export const DEPARTMENTS = {
   MECH:  { name: 'MECH',  show: 'Breaking Bad',          short: 'Br/Ba',   accent: '#3fbf6b' },
   EXTC:  { name: 'EXTC',  show: 'How I Met Your Mother', short: 'HIMYM',   accent: '#ff9f45' },
   AIML:  { name: 'AIML',  show: 'Friends',               short: 'FRIENDS', accent: '#ff5a6e' },
-  ICB:   { name: 'ICB',   show: 'Stranger Things',       short: 'ST',      accent: '#ff3b3b' },
-  AIDS:  { name: 'AIDS',  show: 'Modern Family',         short: 'MF',      accent: '#b78cff' }
+  ICB:      { name: 'ICB',      show: 'Stranger Things',       short: 'ST',    accent: '#ff3b3b' },
+  AIDS:     { name: 'AIDS',     show: 'Modern Family',         short: 'MF',    accent: '#b78cff' },
+  OUTSIDER: { name: 'OUTSIDER', show: 'Guest Stars',           short: 'GUEST', accent: '#9fb8b5' }
 };
 
 export const DEFAULT_DEPARTMENT = {
