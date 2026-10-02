@@ -8,9 +8,12 @@ import styles from './SideControls.module.css';
 export default function SideControls({
   channelAngle,
   onNextChannel,
+  isChannelInteractive = true,
   tuningAngleMV,
   onTuningDragDelta,
-  onTuningStep
+  onTuningStep,
+  isTuningInteractive = true,
+  isTuningInert = false
 }) {
   const [toggleState, setToggleState] = useState(false);
 
@@ -28,12 +31,12 @@ export default function SideControls({
 
       {/* Stacked Knobs */}
       <div className={styles.knobStack}>
-        {/* Upper Knob: Interactive Channel Switch */}
+        {/* Upper Knob: Channel Switch */}
         <Knob
           label="CHANNEL"
           angle={channelAngle}
-          onClick={onNextChannel}
-          isInteractive={true}
+          onClick={isChannelInteractive ? onNextChannel : undefined}
+          isInteractive={isChannelInteractive}
           ticks={[1, 2, 3]}
           tickAngles={CHANNEL_TICK_ANGLES}
         />
@@ -41,13 +44,15 @@ export default function SideControls({
         {/* Lower Knob: Tuning Scroll Control */}
         <Knob
           label="TUNING"
-          motionAngle={tuningAngleMV}
-          isInteractive={true}
-          isTuning={true}
+          motionAngle={isTuningInteractive ? tuningAngleMV : null}
+          angle={!isTuningInteractive ? CHANNEL_TICK_ANGLES[0] : 0}
+          isInteractive={isTuningInteractive}
+          isInert={isTuningInert}
+          isTuning={isTuningInteractive}
           ticks={['A', 'B', 'C']}
           tickAngles={CHANNEL_TICK_ANGLES}
-          onTuningDragDelta={onTuningDragDelta}
-          onTuningStep={onTuningStep}
+          onTuningDragDelta={isTuningInteractive ? onTuningDragDelta : undefined}
+          onTuningStep={isTuningInteractive ? onTuningStep : undefined}
         />
       </div>
 

@@ -1,15 +1,17 @@
-import { CHANNEL_TICK_ANGLES, POINTER_REST_ANGLE } from '../config/knobConfig';
+import { CHANNELS } from '../config/channelConfig';
+
+export { CHANNELS };
 
 export const leaderboardData = {
   topDepartments: [
-    { id: 1, name: 'AI & Data Science (AIHL)', score: 1250 },
-    { id: 2, name: 'Computer Engineering', score: 1120 },
-    { id: 3, name: 'Information Technology', score: 980 },
-    { id: 4, name: 'Electronics & Telecom', score: 860 },
-    { id: 5, name: 'Mechanical Engineering', score: 740 },
-    { id: 6, name: 'Civil Engineering', score: 610 },
-    { id: 7, name: 'Cyber Security', score: 540 },
-    { id: 8, name: 'Chemical Engineering', score: 420 }
+    { id: 1, code: 'AIML', name: 'AIML', score: 1250 },
+    { id: 2, code: 'COMPS', name: 'COMPS', score: 1120 },
+    { id: 3, code: 'IT', name: 'IT', score: 980 },
+    { id: 4, code: 'DS', name: 'DS', score: 860 },
+    { id: 5, code: 'EXTC', name: 'EXTC', score: 740 },
+    { id: 6, code: 'MECH', name: 'MECH', score: 610 },
+    { id: 7, code: 'ICB', name: 'ICB', score: 540 },
+    { id: 8, code: 'AIDS', name: 'AIDS', score: 420 }
   ],
   topCommittees: [
     { id: 1, name: 'Rotaract Club NSS', score: 980 },
@@ -29,37 +31,3 @@ export const leaderboardData = {
     { id: 7, name: 'Priya Iyer', score: 1100 }
   ]
 };
-
-export const CHANNELS = [
-  {
-    id: 0,
-    knobAngle: CHANNEL_TICK_ANGLES[0] - POINTER_REST_ANGLE,
-    tapeLabel: 'LEADERBOARD',
-    subTitle: 'TOP DEPARTMENTS',
-    leftHeader: 'DEPARTMENT',
-    rightHeader: 'SCORE',
-    dataKey: 'topDepartments',
-    chCode: 'CH 01'
-  },
-  {
-    id: 1,
-    knobAngle: CHANNEL_TICK_ANGLES[1] - POINTER_REST_ANGLE,
-    tapeLabel: 'TOP COMMITTEES',
-    subTitle: 'COMMITTEE RANKINGS',
-    leftHeader: 'COMMITTEE',
-    rightHeader: 'SCORE',
-    dataKey: 'topCommittees',
-    chCode: 'CH 02'
-  },
-  {
-    id: 2,
-    knobAngle: CHANNEL_TICK_ANGLES[2] - POINTER_REST_ANGLE,
-    tapeLabel: 'TOP DONORS',
-    subTitle: 'DONOR HALL OF FAME',
-    leftHeader: 'DONOR NAME',
-    rightHeader: 'AMOUNT',
-    dataKey: 'topDonors',
-    chCode: 'CH 03'
-  }
-];
-

@@ -10,8 +10,12 @@ export default function TV({
   children,
   channelAngle,
   onNextChannel,
+  isChannelInteractive = true,
+  isTuningInteractive = true,
+  isTuningInert = false,
   isStaticActive,
-  channelCode
+  channelCode,
+  onUserInteraction
 }) {
   const containerRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -38,6 +42,8 @@ export default function TV({
   }, []);
 
   const handleTuningDragDelta = (delta) => {
+    if (!isTuningInteractive || isTuningInert) return;
+    onUserInteraction?.();
     const el = scrollContainerRef.current;
     if (!el) return;
     const maxScroll = el.scrollHeight - el.clientHeight;
@@ -63,6 +69,8 @@ export default function TV({
   };
 
   const handleTuningStep = (direction) => {
+    if (!isTuningInteractive || isTuningInert) return;
+    onUserInteraction?.();
     const el = scrollContainerRef.current;
     if (!el) return;
     const rowHeight = 36;
@@ -70,7 +78,7 @@ export default function TV({
   };
 
   const childrenWithProps = React.isValidElement(children)
-    ? React.cloneElement(children, { scrollContainerRef, tuningAngleMV })
+    ? React.cloneElement(children, { scrollContainerRef, tuningAngleMV, onUserInteraction })
     : children;
 
   return (
@@ -89,9 +97,12 @@ export default function TV({
           <SideControls
             channelAngle={channelAngle}
             onNextChannel={onNextChannel}
+            isChannelInteractive={isChannelInteractive}
             tuningAngleMV={tuningAngleMV}
             onTuningDragDelta={handleTuningDragDelta}
             onTuningStep={handleTuningStep}
+            isTuningInteractive={isTuningInteractive}
+            isTuningInert={isTuningInert}
           />
         </TVCabinet>
       </div>

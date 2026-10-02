@@ -1,0 +1,13 @@
+.deptBadgeWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.deptBadgeSvg {
+  overflow: visible;
+  display: block;
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { leaderboardData } from '../data/leaderboardData';
+import { DEPARTMENTS } from '../config/departments';
 
 export function useLeaderboard(dataKey = 'topDepartments') {
   const [data, setData] = useState(leaderboardData[dataKey] || []);
@@ -19,15 +20,24 @@ export function useLeaderboard(dataKey = 'topDepartments') {
     return () => clearTimeout(timer);
   }, [dataKey]);
 
-  // TODO: Implement live API polling hook (e.g. setInterval every 30s to fetch /api/leaderboard)
-
   const sortedList = useMemo(() => {
-    const list = [...data].sort((a, b) => b.score - a.score);
+    // --- DEPARTMENT FILTER (Easy to comment out or remove later) ---
+    // Filters topDepartments to only valid codes matching DEPARTMENTS (drops unknown codes)
+    let filteredData = data;
+    if (dataKey === 'topDepartments') {
+      filteredData = data.filter((item) => {
+        const code = String(item.code || item.deptCode || item.dept || item.name || '').toUpperCase().trim();
+        return Boolean(DEPARTMENTS[code]);
+      });
+    }
+    // --- END DEPARTMENT FILTER ---
+
+    const list = [...filteredData].sort((a, b) => b.score - a.score);
     return list.map((item, index) => ({
       ...item,
       rank: index + 1
     }));
-  }, [data]);
+  }, [data, dataKey]);
 
   const topThree = useMemo(() => sortedList.slice(0, 3), [sortedList]);
   const trailingRows = useMemo(() => sortedList.slice(3, 8), [sortedList]);

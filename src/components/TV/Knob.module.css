@@ -40,6 +40,21 @@
   filter: drop-shadow(0 0 6px rgba(201, 162, 75, 0.5));
 }
 
+.nonInteractive {
+  cursor: default !important;
+}
+
+.nonInteractive:hover {
+  filter: none !important;
+}
+
+.inert {
+  opacity: 0.55;
+  filter: grayscale(40%);
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
 .knobButton:focus-visible {
   outline: 3px solid var(--neon);
   outline-offset: 4px;

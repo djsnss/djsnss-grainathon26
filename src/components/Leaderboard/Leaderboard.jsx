@@ -5,9 +5,17 @@ import ColumnHeaders from './ColumnHeaders';
 import ScorePlate from './ScorePlate';
 import TrailingRow from './TrailingRow';
 import { TUNING_MIN_ANGLE, TUNING_MAX_ANGLE, POINTER_REST_ANGLE } from '../../config/knobConfig';
+import { AUTO_SCROLL, ROTATION_INTERVAL_MS } from '../../config/channelConfig';
 import styles from './Leaderboard.module.css';
 
-export default function Leaderboard({ channel, scrollContainerRef, tuningAngleMV }) {
+export default function Leaderboard({
+  channel,
+  scrollContainerRef,
+  tuningAngleMV,
+  isStatic = false,
+  userInteracted = false,
+  onUserInteraction
+}) {
   const { tapeLabel, leftHeader, rightHeader, dataKey } = channel;
   const { topThree, trailingRows } = useLeaderboard(dataKey);
 
@@ -18,21 +26,77 @@ export default function Leaderboard({ channel, scrollContainerRef, tuningAngleMV
   const [thumbTop, setThumbTop] = useState(0);
   const [thumbHeight, setThumbHeight] = useState(30);
   const idleTimerRef = useRef(null);
+  const isUserScrollingRef = useRef(false);
 
-  // Reset scroll to top on channel change
+  // Reset scroll to top on channel change and check scrollability
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
+      const el = scrollRef.current;
+      const isScrollable = el.scrollHeight > el.clientHeight;
+      if (!isScrollable) {
+        setShowIndicator(false);
+      }
     }
     if (tuningAngleMV) {
       tuningAngleMV.set(TUNING_MIN_ANGLE - POINTER_REST_ANGLE);
     }
   }, [channel.id, scrollRef, tuningAngleMV]);
 
+  // Smooth AUTO_SCROLL effect across channel dwell time (disabled when user interacts or content fits)
+  useEffect(() => {
+    if (isStatic || !AUTO_SCROLL || userInteracted) return;
+
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const maxScroll = el.scrollHeight - el.clientHeight;
+    if (maxScroll <= 0) return;
+
+    let animationFrameId;
+    let startTime = null;
+    const duration = Math.max(3000, ROTATION_INTERVAL_MS - 1500);
+
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(1, elapsed / duration);
+
+      if (scrollRef.current && !isUserScrollingRef.current) {
+        scrollRef.current.scrollTop = progress * maxScroll;
+      }
+
+      if (progress < 1 && !isUserScrollingRef.current) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      animationFrameId = requestAnimationFrame(step);
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [channel.id, isStatic, userInteracted, scrollRef]);
+
   const handleScroll = (e) => {
     const el = e.currentTarget;
     const maxScroll = el.scrollHeight - el.clientHeight;
-    const p = maxScroll > 0 ? Math.max(0, Math.min(1, el.scrollTop / maxScroll)) : 0;
+
+    // Detect user manual scroll interaction
+    if (e.isTrusted && !userInteracted) {
+      isUserScrollingRef.current = true;
+      onUserInteraction?.();
+    }
+
+    if (maxScroll <= 0) {
+      if (showIndicator) setShowIndicator(false);
+      return;
+    }
+
+    const p = Math.max(0, Math.min(1, el.scrollTop / maxScroll));
 
     // Synchronize tuning knob angle via motion value without React re-renders
     if (tuningAngleMV) {
@@ -48,15 +112,38 @@ export default function Leaderboard({ channel, scrollContainerRef, tuningAngleMV
     }, 1500);
 
     // Compute scrollbar thumb dimensions
-    if (maxScroll > 0) {
-      const containerH = el.clientHeight;
-      const calculatedHeight = Math.max(20, (containerH / el.scrollHeight) * containerH);
-      const calculatedTop = (el.scrollTop / maxScroll) * (containerH - calculatedHeight);
-      setThumbHeight(calculatedHeight);
-      setThumbTop(calculatedTop);
-    }
+    const containerH = el.clientHeight;
+    const calculatedHeight = Math.max(20, (containerH / el.scrollHeight) * containerH);
+    const calculatedTop = (el.scrollTop / maxScroll) * (containerH - calculatedHeight);
+    setThumbHeight(calculatedHeight);
+    setThumbTop(calculatedTop);
   };
 
+  // Hero static mode for Page "/" (CH1 top 3 plates centered vertically, no scroll area)
+  if (isStatic) {
+    const leaderScore = topThree[0]?.score || 1250;
+    return (
+      <div className={styles.leaderboardContainer} aria-live="polite">
+        <ScreenTitle tapeLabel={tapeLabel} />
+        <ColumnHeaders leftHeader={leftHeader} rightHeader={rightHeader} />
+
+        <div className={styles.heroContainer}>
+          {topThree.map((item, index) => (
+            <ScorePlate
+              key={item.id || index}
+              item={item}
+              rank={item.rank}
+              delay={index + 1}
+              isHero={true}
+              maxScore={leaderScore}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive / Rotating mode for Page "/live" (CH2 / CH3)
   return (
     <div className={styles.leaderboardContainer} aria-live="polite">
       {/* Title & Channel Tape Label (Fixed Header) */}
@@ -71,6 +158,8 @@ export default function Leaderboard({ channel, scrollContainerRef, tuningAngleMV
           className={styles.scrollArea}
           ref={scrollRef}
           onScroll={handleScroll}
+          onWheel={() => { onUserInteraction?.(); }}
+          onTouchMove={() => { onUserInteraction?.(); }}
           tabIndex={0}
           aria-label="Leaderboard List"
         >
@@ -82,6 +171,7 @@ export default function Leaderboard({ channel, scrollContainerRef, tuningAngleMV
                 item={item}
                 rank={item.rank}
                 delay={index + 1}
+                isHero={false}
               />
             ))}
           </div>

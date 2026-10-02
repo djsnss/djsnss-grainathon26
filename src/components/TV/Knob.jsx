@@ -9,6 +9,7 @@ export default function Knob({
   motionAngle = null,
   onClick,
   isInteractive = true,
+  isInert = false,
   isTuning = false,
   ticks = [1, 2, 3],
   tickAngles = CHANNEL_TICK_ANGLES,
@@ -22,7 +23,7 @@ export default function Knob({
   const lastAngleRef = useRef(0);
 
   const handlePointerDown = (e) => {
-    if (!isTuning) return;
+    if (!isTuning || !isInteractive || isInert) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     isDraggingRef.current = true;
@@ -36,7 +37,7 @@ export default function Knob({
   };
 
   const handlePointerMove = (e) => {
-    if (!isTuning || !isDraggingRef.current) return;
+    if (!isTuning || !isInteractive || isInert || !isDraggingRef.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
@@ -61,7 +62,7 @@ export default function Knob({
   };
 
   const handleKeyDown = (e) => {
-    if (!isInteractive) return;
+    if (!isInteractive || isInert) return;
 
     if (isTuning) {
       if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
@@ -120,8 +121,8 @@ export default function Knob({
       <div className={styles.brassCollar}>
         <motion.button
           type="button"
-          className={`${styles.knobButton} ${isTuning ? styles.tuningButton : ''} ${isHeld ? styles.held : ''}`}
-          onClick={!isTuning && isInteractive ? onClick : undefined}
+          className={`${styles.knobButton} ${isTuning ? styles.tuningButton : ''} ${isHeld ? styles.held : ''} ${!isInteractive ? styles.nonInteractive : ''} ${isInert ? styles.inert : ''}`}
+          onClick={!isTuning && isInteractive && !isInert ? onClick : undefined}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -132,15 +133,15 @@ export default function Knob({
           aria-valuenow={isTuning ? Math.round(progress * 100) : undefined}
           aria-valuemin={isTuning ? 0 : undefined}
           aria-valuemax={isTuning ? 100 : undefined}
-          tabIndex={isInteractive ? 0 : -1}
+          tabIndex={isInteractive && !isInert ? 0 : -1}
           style={{
             transformOrigin: '50% 50%',
             ...(motionAngle ? { rotate: motionAngle } : {})
           }}
           animate={motionAngle ? undefined : { rotate: angle }}
           initial={false}
-          whileHover={isInteractive ? { scale: 1.04 } : undefined}
-          whileTap={isInteractive ? { scale: 0.97 } : undefined}
+          whileHover={isInteractive && !isInert ? { scale: 1.04 } : undefined}
+          whileTap={isInteractive && !isInert ? { scale: 0.97 } : undefined}
           transition={motionAngle ? undefined : {
             type: 'spring',
             stiffness: 260,

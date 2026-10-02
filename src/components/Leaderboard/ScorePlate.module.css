@@ -1,3 +1,10 @@
+:root {
+  --plate-gap: 14px;
+  --plate-h: 74px;
+  --plate-h-first: 84px;
+  --bar-opacity: .14;
+}
+
 .scorePlateWrapper {
   position: relative;
   width: 100%;
@@ -79,6 +86,11 @@
   --crown-offset-y: -16px;
   --crown-tilt: -24deg;
   --crown-size: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-left: 2px solid var(--dept-accent, transparent);
 }
 
 .scorePlate {
@@ -97,9 +109,20 @@
   pointer-events: none;
 }
 
+.namePlateTextContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  min-width: 0;
+  flex-shrink: 1;
+  z-index: 2;
+  margin-right: 8px;
+}
+
 .itemName {
   font-family: var(--font-screen);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 1px;
@@ -107,7 +130,29 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.15;
+}
+
+.deptShowSubtitle {
+  font-family: var(--font-screen, sans-serif);
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: rgba(92, 242, 200, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+
+.badgeWrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
   z-index: 2;
+  margin-left: auto;
 }
 
 .itemScore {
@@ -130,4 +175,112 @@
   pointer-events: none;
   z-index: 2;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* ==========================================================================
+   HERO VARIANT (CH1 ONLY)
+   ========================================================================== */
+
+.heroWrapper {
+  margin-bottom: 0;
+}
+
+.heroRank1Wrapper {
+  margin-top: 0;
+  animation: heroRank1Pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes heroRank1Pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(255, 209, 102, 0.8));
+  }
+}
+
+.heroRankToken {
+  width: 38px;
+  height: 38px;
+  font-size: 1.2rem;
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.8),
+    inset 0 1px 3px rgba(255, 255, 255, 0.7);
+}
+
+.heroPlatesContainer {
+  height: clamp(62px, 9.5vh, var(--plate-h, 74px));
+}
+
+.heroRank1Height {
+  height: clamp(70px, 11vh, var(--plate-h-first, 84px));
+}
+
+.heroNamePlate {
+  padding: 0 16px;
+  background: radial-gradient(ellipse at 50% 50%, #0e3d40 0%, #061e20 100%),
+              repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.12) 0px, rgba(0, 0, 0, 0.12) 1px, transparent 1px, transparent 3px);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.85);
+  border-left: 3px solid var(--dept-accent, transparent);
+}
+
+.heroScorePlate {
+  width: 140px;
+  padding: 0 16px;
+  background: radial-gradient(ellipse at 50% 50%, #0e3d40 0%, #061e20 100%),
+              repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.12) 0px, rgba(0, 0, 0, 0.12) 1px, transparent 1px, transparent 3px);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.85);
+}
+
+.scoreBarFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, var(--dept-accent, #5cf2c8));
+  opacity: var(--bar-opacity, 0.14);
+  border-right: 2px solid var(--dept-accent, #5cf2c8);
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heroTextContainer {
+  margin-right: 10px;
+  z-index: 2;
+}
+
+.heroItemName {
+  font-size: 1.2rem;
+  font-weight: 750;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px var(--dept-accent, rgba(92, 242, 200, 0.4));
+  line-height: 1.15;
+}
+
+.heroShowSubtitle {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: rgba(92, 242, 200, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+
+.heroItemScore {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--neon-bright);
+  text-shadow: 0 0 12px var(--neon-glow);
+  letter-spacing: 1px;
+  z-index: 2;
+}
+
+.heroCrownBadge {
+  left: -14px;
+  top: -15px;
+  width: 34px;
+  z-index: 5;
 }

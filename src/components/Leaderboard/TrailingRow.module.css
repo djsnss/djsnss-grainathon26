@@ -1,13 +1,14 @@
 .trailingRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   padding: 4px 12px;
   margin-bottom: 4px;
   border-radius: 4px;
   background: rgba(10, 35, 38, 0.4);
   transition: background 0.15s ease;
+  border-left: 2px solid var(--dept-accent, transparent);
 }
 
 .trailingRow:hover {
@@ -21,6 +22,7 @@
   color: var(--label-text);
   width: 24px;
   opacity: 0.85;
+  flex-shrink: 0;
 }
 
 .rowName {
@@ -31,7 +33,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 320px;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 260px;
+}
+
+.deptBadgeWrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .dottedLeader {
@@ -39,6 +49,7 @@
   border-bottom: 2px dotted rgba(92, 242, 200, 0.35);
   height: 2px;
   margin: 0 8px;
+  min-width: 12px;
 }
 
 .rowScore {
