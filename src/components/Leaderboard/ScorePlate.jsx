@@ -8,8 +8,7 @@ export default function ScorePlate({
   item,
   rank = 1,
   delay = 0,
-  isHero = false,
-  maxScore = 1250
+  isHero = false
 }) {
   const [displayScore, setDisplayScore] = useState(0);
 
@@ -41,16 +40,13 @@ export default function ScorePlate({
   const rankClass = rank === 1 ? styles.rankToken1 : rank === 2 ? styles.rankToken2 : styles.rankToken3;
   const strokeColor = rank === 1 ? '#ffd166' : rank === 2 ? '#e2e8f0' : '#d08a5b';
 
-  // Calculate score ratio for faint score bar fill (leader = 100%)
-  const leaderScore = maxScore > 0 ? maxScore : 1250;
-  const scoreRatio = Math.min(100, Math.max(5, (item.score / leaderScore) * 100));
+
 
   return (
     <motion.div
       className={`${styles.scorePlateWrapper} ${rank === 1 ? styles.rank1Wrapper : ''} ${isHero ? styles.heroWrapper : ''} ${isHero && rank === 1 ? styles.heroRank1Wrapper : ''}`}
       style={{
-        '--dept-accent': dept.accent || '#5cf2c8',
-        '--bar-opacity': '.14'
+        '--dept-accent': dept.accent || '#5cf2c8'
       }}
       initial={{ opacity: 0, x: -25 }}
       animate={{ opacity: 1, x: 0 }}
@@ -64,18 +60,7 @@ export default function ScorePlate({
       <div className={`${styles.platesContainer} ${rank === 1 ? styles.rank1Height : ''} ${isHero ? styles.heroPlatesContainer : ''} ${isHero && rank === 1 ? styles.heroRank1Height : ''}`}>
         {/* Name Plate */}
         <div className={`${styles.namePlate} ${isHero ? styles.heroNamePlate : ''}`}>
-          {/* Subtle Score Bar (Behind text, animating from left on load) */}
-          {isHero && (
-            <motion.div
-              className={styles.scoreBarFill}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, ease: 'easeOut', delay: delay * 0.1 + 0.1 }}
-              style={{
-                width: `${scoreRatio}%`
-              }}
-            />
-          )}
+
 
           {rank === 1 && (
             <svg className={`${styles.crownBadge} ${isHero ? styles.heroCrownBadge : ''}`} viewBox="0 0 24 24" fill="#ffd166">
