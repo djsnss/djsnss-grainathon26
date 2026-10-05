@@ -24,7 +24,7 @@ function normalizeCommitteeName(name = '') {
 const loggedUnknownCommittees = new Set();
 
 // 9 official department codes in order
-const OFFICIAL_DEPTS = ['AIML', 'COMPS', 'IT', 'DS', 'EXTC', 'MECH', 'ICB', 'AIDS', 'OUTSIDER'];
+const OFFICIAL_DEPTS = ['AIML', 'COMPS', 'IT', 'DS', 'EXTC', 'MECH', 'ICB', 'AIDS', 'OTHER'];
 
 // Generate zero-score fallback lists
 export function createZeroDepartments() {

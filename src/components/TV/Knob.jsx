@@ -15,41 +15,52 @@ export default function Knob({
   tickAngles = CHANNEL_TICK_ANGLES,
   onTuningDragDelta,
   onTuningStep,
-  progress = 0
+  progress = 0,
+  onSelectPage,
+  pageIndex = 0,
+  totalPages = 1,
+  onUserInteraction
 }) {
   const teethCount = 24;
   const [isHeld, setIsHeld] = useState(false);
   const isDraggingRef = useRef(false);
-  const lastAngleRef = useRef(0);
+  const dragMovedRef = useRef(false);
 
   const handlePointerDown = (e) => {
-    if (!isTuning || !isInteractive || isInert) return;
+    if (!isInteractive || isInert) return;
+    if (!isTuning) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     isDraggingRef.current = true;
+    dragMovedRef.current = false;
     setIsHeld(true);
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const rad = Math.atan2(e.clientY - cy, e.clientX - cx);
-    lastAngleRef.current = rad * (180 / Math.PI);
+    onUserInteraction?.();
   };
 
   const handlePointerMove = (e) => {
     if (!isTuning || !isInteractive || isInert || !isDraggingRef.current) return;
+    dragMovedRef.current = true;
+    onUserInteraction?.();
+
     const rect = e.currentTarget.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const rad = Math.atan2(e.clientY - cy, e.clientX - cx);
-    const currentAngle = rad * (180 / Math.PI);
+    let deg = rad * (180 / Math.PI);
 
-    let delta = currentAngle - lastAngleRef.current;
-    if (delta > 180) delta -= 360;
-    if (delta < -180) delta += 360;
+    // Convert deg relative to top (12 o'clock = 0 deg)
+    let relDeg = deg + 90;
+    if (relDeg > 180) relDeg -= 360;
 
-    lastAngleRef.current = currentAngle;
-    onTuningDragDelta?.(delta);
+    const minA = TUNING_MIN_ANGLE;
+    const maxA = TUNING_MAX_ANGLE;
+    let clampedP = (relDeg - minA) / (maxA - minA);
+    clampedP = Math.max(0, Math.min(1, clampedP));
+
+    if (totalPages > 1 && onSelectPage) {
+      const targetPage = Math.round(clampedP * (totalPages - 1));
+      onSelectPage(targetPage);
+    }
   };
 
   const handlePointerUp = (e) => {
@@ -59,6 +70,31 @@ export default function Knob({
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch (err) {}
+    onUserInteraction?.();
+  };
+
+  const handleClick = (e) => {
+    if (!isInteractive || isInert) return;
+    onUserInteraction?.();
+
+    if (isTuning) {
+      if (!dragMovedRef.current && totalPages > 1 && onSelectPage) {
+        onSelectPage((pageIndex + 1) % totalPages);
+      }
+    } else {
+      onClick?.();
+    }
+  };
+
+  const handleWheel = (e) => {
+    if (!isTuning || !isInteractive || isInert) return;
+    e.preventDefault();
+    onUserInteraction?.();
+    const dir = e.deltaY > 0 ? 1 : -1;
+    if (totalPages > 1 && onSelectPage) {
+      const nextP = (pageIndex + dir + totalPages) % totalPages;
+      onSelectPage(nextP);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -67,16 +103,22 @@ export default function Knob({
     if (isTuning) {
       if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
         e.preventDefault();
-        onTuningStep?.(-1);
+        onUserInteraction?.();
+        if (totalPages > 1 && onSelectPage) {
+          onSelectPage((pageIndex - 1 + totalPages) % totalPages);
+        }
       } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
         e.preventDefault();
-        onTuningStep?.(1);
-      } else if (e.key === 'PageUp') {
+        onUserInteraction?.();
+        if (totalPages > 1 && onSelectPage) {
+          onSelectPage((pageIndex + 1) % totalPages);
+        }
+      } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        onTuningStep?.(-3);
-      } else if (e.key === 'PageDown') {
-        e.preventDefault();
-        onTuningStep?.(3);
+        onUserInteraction?.();
+        if (totalPages > 1 && onSelectPage) {
+          onSelectPage((pageIndex + 1) % totalPages);
+        }
       }
     } else {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -122,11 +164,12 @@ export default function Knob({
         <motion.button
           type="button"
           className={`${styles.knobButton} ${isTuning ? styles.tuningButton : ''} ${isHeld ? styles.held : ''} ${!isInteractive ? styles.nonInteractive : ''} ${isInert ? styles.inert : ''}`}
-          onClick={!isTuning && isInteractive && !isInert ? onClick : undefined}
+          onClick={handleClick}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
+          onWheel={handleWheel}
           onKeyDown={handleKeyDown}
           role={isTuning ? 'slider' : 'button'}
           aria-label={isTuning ? `${label} Scroll Control` : `Change channel (current position ${angle} degrees)`}
@@ -136,6 +179,7 @@ export default function Knob({
           tabIndex={isInteractive && !isInert ? 0 : -1}
           style={{
             transformOrigin: '50% 50%',
+            touchAction: 'none',
             ...(motionAngle ? { rotate: motionAngle } : {})
           }}
           animate={motionAngle ? undefined : { rotate: angle }}

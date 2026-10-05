@@ -21,7 +21,10 @@ export default function TV({
   progress = 0,
   pageTicks,
   pageTickAngles,
-  onTuningStep
+  onTuningStep,
+  onSelectPage,
+  pageIndex = 0,
+  totalPages = 1
 }) {
   const containerRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -130,6 +133,10 @@ export default function TV({
             progress={progress}
             pageTicks={pageTicks}
             pageTickAngles={pageTickAngles}
+            onSelectPage={onSelectPage}
+            pageIndex={pageIndex}
+            totalPages={totalPages}
+            onUserInteraction={onUserInteraction}
           />
         </TVCabinet>
       </div>

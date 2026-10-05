@@ -2,15 +2,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
   margin-bottom: 8px;
 }
 
 .mainTitle {
   font-family: 'Press Start 2P', 'VT323', monospace;
-  font-size: var(--title-size, 1.95rem);
+  font-size: var(--title-size, 1.65rem);
   font-weight: 400;
   color: #ffffff;
-  letter-spacing: 2px;
+  letter-spacing: 0.02em;
+  padding-left: 0.02em;
   text-shadow: 
     -2px 0 #ff2fd6,
      2px 0 #2fffd0,
@@ -19,4 +23,5 @@
   text-transform: uppercase;
   text-align: center;
   white-space: nowrap;
+  max-width: 75%;
 }

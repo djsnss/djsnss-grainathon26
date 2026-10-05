@@ -123,10 +123,10 @@ export default function PageRotating() {
     const scheduleNextStep = () => {
       if (rotationTimerRef.current) clearTimeout(rotationTimerRef.current);
 
-      // Pause while document is hidden/backgrounded
+      // 1. Pause while document is hidden/backgrounded
       if (document.hidden) return;
 
-      // Pause if manual interaction pause is currently active
+      // 2. Pause if manual interaction pause is currently active
       const now = Date.now();
       if (manualPauseUntil > now) {
         const remainingPause = manualPauseUntil - now;
@@ -134,36 +134,49 @@ export default function PageRotating() {
         return;
       }
 
-      const isLastPage = safePageIndex >= totalPages - 1;
+      // 3. Check if auto-rotation is active
+      const isAutoActive = enablePageRotation || enableChannelSwitching;
+      if (!isAutoActive) return;
 
-      if (!isLastPage) {
-        // Rotate to next page on current channel if page rotation is enabled
-        if (enablePageRotation) {
-          rotationTimerRef.current = setTimeout(() => {
-            setPageIndex((prev) => prev + 1);
-          }, LIVE_CONFIG.PAGE_ROTATION_INTERVAL_MS);
-        }
-      } else {
-        // On last page of current channel: calculate channel duration
-        // Time on channel = max(pages * PAGE_ROTATION_INTERVAL_MS, CHANNEL_SWITCH_INTERVAL_MS)
-        const elapsedTimeOnPages = (totalPages - 1) * LIVE_CONFIG.PAGE_ROTATION_INTERVAL_MS;
-        const dwellTimeOnLastPage = Math.max(
-          LIVE_CONFIG.PAGE_ROTATION_INTERVAL_MS,
-          LIVE_CONFIG.CHANNEL_SWITCH_INTERVAL_MS - elapsedTimeOnPages
-        );
+      const lastIndex = totalPages - 1;
+      const isLastPage = safePageIndex >= lastIndex;
 
-        if (enableChannelSwitching) {
-          rotationTimerRef.current = setTimeout(() => {
+      // Dwell for current page = (pageIndex === lastIndex) ? max(PAGE_ROTATION_INTERVAL_MS, LAST_PAGE_MIN_MS) : PAGE_ROTATION_INTERVAL_MS
+      // Add 300ms transition duration so page transition animation doesn't eat into the display dwell
+      const TRANSITION_MS = 300;
+      const baseDwell = isLastPage
+        ? Math.max(LIVE_CONFIG.PAGE_ROTATION_INTERVAL_MS, LIVE_CONFIG.LAST_PAGE_MIN_MS)
+        : LIVE_CONFIG.PAGE_ROTATION_INTERVAL_MS;
+
+      const totalTimerDuration = baseDwell + TRANSITION_MS;
+
+      rotationTimerRef.current = setTimeout(() => {
+        if (safePageIndex < lastIndex) {
+          // Advance to next page on current channel if page rotation is enabled
+          if (enablePageRotation) {
+            const nextP = safePageIndex + 1;
+            console.debug(
+              `[Live Rotation ${new Date().toISOString()}] Channel ${currentChannel.chCode} | Page ${nextP + 1}/${totalPages}`
+            );
+            setPageIndex(nextP);
+          }
+        } else {
+          // Last page has now been shown for its full dwell duration!
+          if (enableChannelSwitching) {
             const nextChannelIdx = channelIndex === 1 ? 2 : 1;
+            const nextChannel = CHANNELS[nextChannelIdx];
+            console.debug(
+              `[Live Rotation ${new Date().toISOString()}] Switching to Channel ${nextChannel.chCode} | Page 1/1`
+            );
             switchChannel(nextChannelIdx);
-          }, dwellTimeOnLastPage);
-        } else if (enablePageRotation) {
-          // Loop back to page 0 on same channel if channel switching is disabled
-          rotationTimerRef.current = setTimeout(() => {
+          } else if (enablePageRotation) {
+            console.debug(
+              `[Live Rotation ${new Date().toISOString()}] Channel ${currentChannel.chCode} | Page 1/${totalPages} (Loop)`
+            );
             setPageIndex(0);
-          }, dwellTimeOnLastPage);
+          }
         }
-      }
+      }, totalTimerDuration);
     };
 
     scheduleNextStep();
@@ -189,7 +202,8 @@ export default function PageRotating() {
     enableChannelSwitching,
     enablePageRotation,
     manualPauseUntil,
-    switchChannel
+    switchChannel,
+    currentChannel.chCode
   ]);
 
   // Compute pointer sweep progress and ticks for tuning knob
@@ -217,6 +231,9 @@ export default function PageRotating() {
         pageTicks={pageTicks}
         pageTickAngles={pageTickAngles}
         onTuningStep={handleStepPage}
+        onSelectPage={handleSelectPage}
+        pageIndex={safePageIndex}
+        totalPages={totalPages}
       >
         <Leaderboard
           channel={currentChannel}

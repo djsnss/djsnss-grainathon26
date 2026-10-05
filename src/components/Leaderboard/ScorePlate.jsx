@@ -121,7 +121,7 @@ export default function ScorePlate({
 
           {dept.short && (
             <div className={styles.badgeWrapper}>
-              <DeptBadge short={dept.short} accent={dept.accent} size={isHero ? 40 : 38} />
+              <DeptBadge short={dept.short} accent={dept.accent} size={isHero ? 40 : 46} />
             </div>
           )}
         </div>

@@ -16,7 +16,11 @@ export default function SideControls({
   isTuningInert = false,
   progress = 0,
   pageTicks = ['A', 'B', 'C'],
-  pageTickAngles = CHANNEL_TICK_ANGLES
+  pageTickAngles = CHANNEL_TICK_ANGLES,
+  onSelectPage,
+  pageIndex = 0,
+  totalPages = 1,
+  onUserInteraction
 }) {
   const [toggleState, setToggleState] = useState(false);
 
@@ -42,6 +46,7 @@ export default function SideControls({
           isInteractive={isChannelInteractive}
           ticks={[1, 2, 3]}
           tickAngles={CHANNEL_TICK_ANGLES}
+          onUserInteraction={onUserInteraction}
         />
 
         {/* Lower Knob: Tuning Scroll Control */}
@@ -57,6 +62,10 @@ export default function SideControls({
           progress={progress}
           onTuningDragDelta={isTuningInteractive ? onTuningDragDelta : undefined}
           onTuningStep={isTuningInteractive ? onTuningStep : undefined}
+          onSelectPage={onSelectPage}
+          pageIndex={pageIndex}
+          totalPages={totalPages}
+          onUserInteraction={onUserInteraction}
         />
       </div>
 

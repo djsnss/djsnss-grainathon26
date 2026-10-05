@@ -24,14 +24,14 @@ export const DEFAULT_DEPARTMENT = {
 
 export const DEPARTMENT_ALIASES = {
   'CSEDS': 'DS',
-  'OTHER': 'OUTSIDER',
+  'OTHER': 'OTHER',
   'AIHL': 'AIML',
-  'GUEST': 'OUTSIDER'
+  'GUEST': 'OTHER'
 };
 
 /**
  * Normalizes a raw department code or alias to its official department key.
- * Example: "CSEDS" -> "DS", "OTHER" -> "OUTSIDER", "AIHL" -> "AIML".
+ * Example: "CSEDS" -> "DS", "OTHER" -> "OTHER", "AIHL" -> "AIML".
  * Returns null if the code is unknown.
  */
 export function normalizeDeptCode(rawCode = '') {

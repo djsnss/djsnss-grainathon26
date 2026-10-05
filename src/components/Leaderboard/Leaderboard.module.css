@@ -19,10 +19,11 @@
 .pagedPlatesContainer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--page-plate-gap, 16px);
   width: 100%;
   flex: 1;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   padding: 4px 6px;
 }
 

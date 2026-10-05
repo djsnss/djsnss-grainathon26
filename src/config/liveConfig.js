@@ -9,9 +9,9 @@ export const LIVE_CONFIG = {
   // Time in milliseconds to display each page before advancing (5000ms = 5 seconds)
   PAGE_ROTATION_INTERVAL_MS: 3000,
 
-  // Minimum time in milliseconds to stay on a channel before switching (10000ms = 10 seconds)
-  CHANNEL_SWITCH_INTERVAL_MS: 15000,
+  // The last page stays on screen for at least this long, safe range 2000-5000
+  LAST_PAGE_MIN_MS: 3000,
 
   // Duration in milliseconds to pause auto-rotation after manual user interaction (15000ms = 15 seconds)
-  MANUAL_PAUSE_MS: 15000
+  MANUAL_PAUSE_MS: 7000
 };

@@ -1,16 +1,19 @@
 .tapeContainer {
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  width: 100%;
   margin: 2px 0 14px 0;
 }
 
 .tapeText {
   position: relative;
   font-family: var(--font-pixel, 'VT323');
-  font-size: var(--subtitle-size, 1.35rem);
-  letter-spacing: 3px;
+  font-size: var(--subtitle-size, 1.68rem);
+  letter-spacing: 0.04em;
+  padding-left: 0.04em;
   color: #3dff4f;
   font-weight: 700;
   white-space: nowrap;
@@ -19,4 +22,5 @@
     0 0 6px rgba(61, 255, 79, 0.8),
     0 0 14px rgba(61, 255, 79, 0.4),
     0 1px 2px rgba(0, 0, 0, 0.8);
+  text-align: center;
 }
