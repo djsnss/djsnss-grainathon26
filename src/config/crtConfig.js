@@ -4,7 +4,7 @@
  */
 export const CRT = {
   // Opacity of the scanline pattern overlay (Safe range: 0.05 - 0.40)
-  scanlineOpacity: 0.18,
+  scanlineOpacity: 0.06,
 
   // Height of each scanline row in pixels (Safe range: 1 - 6 px)
   scanlineSize: 3,

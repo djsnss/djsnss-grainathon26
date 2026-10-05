@@ -6,7 +6,7 @@
   padding: 4px 12px;
   margin-bottom: 4px;
   border-radius: 4px;
-  background: rgba(10, 35, 38, 0.4);
+  background: rgba(8, 28, 30, 0.82);
   transition: background 0.15s ease;
   border-left: 2px solid var(--dept-accent, transparent);
 }

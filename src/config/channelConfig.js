@@ -21,7 +21,7 @@ export const CHANNELS = [
     chCode: 'CH 01',
     tickIndex: 0,
     knobAngle: CHANNEL_TICK_ANGLES[0] - POINTER_REST_ANGLE,
-    tapeLabel: 'LEADERBOARD',
+    tapeLabel: 'LEADER BOARD',
     subTitle: 'TOP DEPARTMENTS',
     leftHeader: 'DEPARTMENT',
     rightHeader: 'SCORE',

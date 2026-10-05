@@ -1,4 +1,5 @@
 import React from 'react';
+import { EVENT_TITLE } from '../../config/leaderboardConfig';
 import styles from './Stage.module.css';
 
 export default function Stage({ children, bgImage }) {
@@ -21,7 +22,9 @@ export default function Stage({ children, bgImage }) {
         <div
           className={styles.bgContainer}
           style={{ backgroundImage: `url(${bgImage})` }}
-        />
+        >
+          <div className={styles.bgOverlay} />
+        </div>
       ) : (
         <div className={styles.fallbackGrid} />
       )}
@@ -33,7 +36,7 @@ export default function Stage({ children, bgImage }) {
       </main>
 
       <div className={styles.creditBadge}>
-        <span>DJSNSS</span> • GRAINATHON 5.0
+        <span>DJSNSS</span> • {EVENT_TITLE}
       </div>
     </div>
   );

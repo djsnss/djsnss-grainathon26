@@ -6,14 +6,17 @@
 }
 
 .mainTitle {
-  font-family: var(--font-title);
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: 'Press Start 2P', 'VT323', monospace;
+  font-size: 1.45rem;
+  font-weight: 400;
   color: #ffffff;
-  letter-spacing: 5px;
+  letter-spacing: 2px;
   text-shadow: 
-    0 0 10px rgba(255, 255, 255, 0.9),
-    0 0 20px var(--neon-glow);
-  margin-bottom: 2px;
+    -2px 0 #ff2fd6,
+     2px 0 #2fffd0,
+     0 0 10px rgba(255, 255, 255, 0.4);
+  margin-bottom: 4px;
   text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
 }

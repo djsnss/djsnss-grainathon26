@@ -16,8 +16,16 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: brightness(0.65) contrast(1.15) saturate(1.1);
+  filter: brightness(1) contrast(1.05) saturate(1.05);
   transition: opacity 0.5s ease;
+}
+
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: #000000;
+  opacity: var(--stage-dim, 0.28);
+  pointer-events: none;
 }
 
 .fallbackGrid {
@@ -36,7 +44,7 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 20%, rgba(5, 5, 8, 0.65) 90%);
+  background: radial-gradient(circle at center, transparent 40%, rgba(5, 5, 8, 0.45) 90%);
 }
 
 .contentWrapper {
