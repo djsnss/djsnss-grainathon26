@@ -39,10 +39,13 @@
   --tape-ink: #1f1d18;
 
   /* Backdrop & CRT Modifications */
-  --stage-dim: 0;
-
+  --stage-dim: 0.12;
+  --tv-shadow-opacity: 0.1;
+  --tv-scale: 0.9;
 
   /* Typography */
+  --title-size: 1.95rem;
+  --subtitle-size: 1.35rem;
   --font-title: 'Press Start 2P', 'VT323', monospace;
   --font-pixel: 'VT323', 'Silkscreen', monospace;
   --font-screen: 'Chakra Petch', 'Rajdhani', sans-serif;

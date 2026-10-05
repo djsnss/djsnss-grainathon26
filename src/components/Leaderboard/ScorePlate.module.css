@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .rank1Wrapper {
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 .namePlate,

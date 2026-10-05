@@ -6,6 +6,8 @@ import SideControls from './SideControls';
 import { TUNING_MIN_ANGLE, TUNING_MAX_ANGLE, POINTER_REST_ANGLE } from '../../config/knobConfig';
 import styles from './TV.module.css';
 
+export const TV_SCALE = 0.9;
+
 export default function TV({
   children,
   channelAngle,
@@ -31,9 +33,9 @@ export default function TV({
       // Target design size 1000px wide, 620px high
       const scaleX = (parentWidth * 0.92) / 1000;
       const scaleY = (parentHeight * 0.92) / 620;
-      const nextScale = Math.min(scaleX, scaleY, 1.25);
+      const nextScale = Math.min(scaleX, scaleY, 1.25) * TV_SCALE;
       
-      setScale(Math.max(nextScale, 0.45));
+      setScale(Math.max(nextScale, 0.35));
     };
 
     handleResize();

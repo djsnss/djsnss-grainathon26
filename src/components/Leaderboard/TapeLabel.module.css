@@ -3,13 +3,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 2px 0 6px 0;
+  margin: 2px 0 14px 0;
 }
 
 .tapeText {
   position: relative;
-  font-family: 'VT323', 'Silkscreen', 'Press Start 2P', monospace;
-  font-size: 1.45rem;
+  font-family: var(--font-pixel, 'VT323');
+  font-size: var(--subtitle-size, 1.35rem);
   letter-spacing: 3px;
   color: #3dff4f;
   font-weight: 700;
