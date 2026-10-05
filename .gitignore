@@ -3,3 +3,5 @@ node_modules/
 credentials/
 *.log
 package-lock.json
+service-account.json
+something.txt
