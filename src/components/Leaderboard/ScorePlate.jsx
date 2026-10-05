@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getDepartmentConfig } from '../../config/departments';
+import { sanitizeScore, formatScore } from '../../utils/formatScore';
 import DeptBadge from './DeptBadge';
 import styles from './ScorePlate.module.css';
 
@@ -10,23 +11,30 @@ export default function ScorePlate({
   delay = 0,
   isHero = false
 }) {
-  const [displayScore, setDisplayScore] = useState(0);
+  const [displayScore, setDisplayScore] = useState(() => sanitizeScore(item.score));
 
   useEffect(() => {
-    let start = 0;
-    const end = item.score || 0;
+    const end = sanitizeScore(item.score);
+    let start = displayScore;
+
+    if (start === end) {
+      setDisplayScore(end);
+      return;
+    }
+
     const duration = 800; // ms
     const stepTime = 20;
     const steps = duration / stepTime;
     const increment = (end - start) / steps;
+    let current = start;
 
     const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
+      current += increment;
+      if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
         setDisplayScore(end);
         clearInterval(timer);
       } else {
-        setDisplayScore(Math.floor(start));
+        setDisplayScore(current);
       }
     }, stepTime);
 
@@ -150,7 +158,7 @@ export default function ScorePlate({
           </svg>
 
           <span className={`${styles.itemScore} ${isHero ? styles.heroItemScore : ''}`}>
-            {displayScore}
+            {formatScore(displayScore)}
           </span>
         </div>
       </div>

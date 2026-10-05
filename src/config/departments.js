@@ -22,10 +22,33 @@ export const DEFAULT_DEPARTMENT = {
   accent: ''
 };
 
+export const DEPARTMENT_ALIASES = {
+  'CSEDS': 'DS',
+  'OTHER': 'OUTSIDER',
+  'AIHL': 'AIML',
+  'GUEST': 'OUTSIDER'
+};
+
+/**
+ * Normalizes a raw department code or alias to its official department key.
+ * Example: "CSEDS" -> "DS", "OTHER" -> "OUTSIDER", "AIHL" -> "AIML".
+ * Returns null if the code is unknown.
+ */
+export function normalizeDeptCode(rawCode = '') {
+  if (!rawCode) return null;
+  let upper = String(rawCode).trim().toUpperCase();
+  if (DEPARTMENT_ALIASES[upper]) {
+    upper = DEPARTMENT_ALIASES[upper];
+  }
+  if (DEPARTMENTS[upper]) {
+    return upper;
+  }
+  return null;
+}
+
 /**
  * Look up department config by department code or name.
  * Unknown codes fall back to neutral defaults with no show or badge.
- * Automatically maps legacy "AIHL" code to "AIML".
  */
 export function getDepartmentConfig(itemOrCode) {
   if (!itemOrCode) return DEFAULT_DEPARTMENT;
@@ -36,19 +59,9 @@ export function getDepartmentConfig(itemOrCode) {
 
   if (!rawCode) return DEFAULT_DEPARTMENT;
 
-  let upper = String(rawCode).toUpperCase().trim();
-  if (upper === 'AIHL') upper = 'AIML';
-
-  // Direct code match (e.g. "DS", "AIML")
-  if (DEPARTMENTS[upper]) {
-    return DEPARTMENTS[upper];
-  }
-
-  // Substring match for verbose department names (e.g. "AI & Data Science (AIML)")
-  for (const key of Object.keys(DEPARTMENTS)) {
-    if (upper.includes(key)) {
-      return DEPARTMENTS[key];
-    }
+  const normalizedKey = normalizeDeptCode(rawCode);
+  if (normalizedKey && DEPARTMENTS[normalizedKey]) {
+    return DEPARTMENTS[normalizedKey];
   }
 
   return { ...DEFAULT_DEPARTMENT, name: rawCode };

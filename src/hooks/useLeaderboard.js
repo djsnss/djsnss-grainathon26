@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
+import { API_BASE } from '../config/api';
+import { apiDataManager } from '../services/apiService';
 import { leaderboardData } from '../data/leaderboardData';
-import { DEPARTMENTS } from '../config/departments';
+import { DEPARTMENTS, normalizeDeptCode } from '../config/departments';
 import { COMMITTEES_LIST } from '../config/committees';
+import { sanitizeScore } from '../utils/formatScore';
 
 // Helper to normalize committee strings for robust matching:
-// Trims whitespace, converts to uppercase, removes leading "DJS ", and collapses multiple spaces.
 function normalizeCommitteeName(name = '') {
   return String(name)
     .trim()
@@ -13,110 +15,120 @@ function normalizeCommitteeName(name = '') {
     .replace(/\s+/g, ' ');
 }
 
-// Track logged unknown committee names so console.warn fires ONCE per unknown committee
-const loggedUnknownCommittees = new Set();
+// Track logged unknown committee names for mock fallback mode
+const loggedUnknownCommitteesMock = new Set();
 
 export function useLeaderboard(dataKey = 'topDepartments') {
-  const [data, setData] = useState(leaderboardData[dataKey] || []);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // If API_BASE is non-empty, use real API data manager. Otherwise, use mock data.
+  const isApiMode = Boolean(API_BASE);
+
+  const [apiTick, setApiTick] = useState(0);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    if (!isApiMode) return;
+    const unsubscribe = apiDataManager.subscribe(() => {
+      setApiTick((prev) => prev + 1);
+    });
+    return unsubscribe;
+  }, [isApiMode]);
 
-    const timer = setTimeout(() => {
-      setData(leaderboardData[dataKey] || []);
-      setLoading(false);
-    }, 100);
+  // --- MOCK MODE DATA GENERATION ---
+  const mockSortedList = useMemo(() => {
+    if (isApiMode) return [];
+    const rawData = leaderboardData[dataKey] || [];
 
-    return () => clearTimeout(timer);
-  }, [dataKey]);
-
-  const sortedList = useMemo(() => {
-    // --- DEPARTMENT FILTER ---
     if (dataKey === 'topDepartments') {
-      const filteredData = data.filter((item) => {
+      const filteredData = rawData.filter((item) => {
         const code = String(item.code || item.deptCode || item.dept || item.name || '').toUpperCase().trim();
         return Boolean(DEPARTMENTS[code]);
       });
-      const list = [...filteredData].sort((a, b) => b.score - a.score);
+      const list = [...filteredData].sort((a, b) => sanitizeScore(b.score) - sanitizeScore(a.score));
       return list.map((item, index) => ({
         ...item,
         rank: index + 1
       }));
     }
 
-    // --- COMMITTEE PROCESSING (Master List Fallback & Overlay) ---
     if (dataKey === 'topCommittees') {
-      // 1. Build initial master map initialized at 0 score for all 14 official committees
       const committeeMap = new Map();
       COMMITTEES_LIST.forEach((officialName, idx) => {
         const normKey = normalizeCommitteeName(officialName);
         committeeMap.set(normKey, {
           id: `master-${idx + 1}`,
           name: officialName,
-          score: 0,
-          isOfficial: true
+          score: 0
         });
       });
 
       const unknownItems = [];
 
-      // 2. Overlay scores from incoming data
-      data.forEach((item) => {
+      rawData.forEach((item) => {
         const normKey = normalizeCommitteeName(item.name);
         if (committeeMap.has(normKey)) {
           const committee = committeeMap.get(normKey);
-          committee.score = Number(item.score) || 0;
+          committee.score = sanitizeScore(item.score);
           if (item.id) committee.id = item.id;
         } else {
-          // Log console.warn ONCE per unknown committee name and retain with its score
-          if (!loggedUnknownCommittees.has(item.name)) {
-            console.warn(`[Leaderboard] Unknown committee name in data: "${item.name}"`);
-            loggedUnknownCommittees.add(item.name);
+          if (!loggedUnknownCommitteesMock.has(item.name)) {
+            console.warn(`[Leaderboard Mock] Unknown committee name in data: "${item.name}"`);
+            loggedUnknownCommitteesMock.add(item.name);
           }
           unknownItems.push({
             id: item.id || `unknown-${item.name}`,
             name: item.name,
-            score: Number(item.score) || 0
+            score: sanitizeScore(item.score)
           });
         }
       });
 
-      // 3. Combine master committees (with overlay scores or 0) + any unknown entries
       const combined = [...committeeMap.values(), ...unknownItems];
-
-      // 4. Sort by score descending; break ties alphabetically by committee name (stable)
       combined.sort((a, b) => {
-        if (b.score !== a.score) {
-          return b.score - a.score;
-        }
+        if (b.score !== a.score) return b.score - a.score;
         return a.name.localeCompare(b.name);
       });
 
-      // 5. Re-assign ranks 1 to N
       return combined.map((item, index) => ({
         ...item,
         rank: index + 1
       }));
     }
 
-    const list = [...data].sort((a, b) => b.score - a.score);
+    const list = [...rawData].sort((a, b) => sanitizeScore(b.score) - sanitizeScore(a.score));
     return list.map((item, index) => ({
       ...item,
       rank: index + 1
     }));
-  }, [data, dataKey]);
+  }, [dataKey, isApiMode]);
+
+  // --- FINAL LIST SELECTION ---
+  const sortedList = useMemo(() => {
+    if (!isApiMode) {
+      return mockSortedList;
+    }
+
+    if (dataKey === 'topDepartments') {
+      return apiDataManager.departments;
+    }
+
+    if (dataKey === 'topCommittees') {
+      return apiDataManager.committees;
+    }
+
+    return apiDataManager.departments;
+  }, [isApiMode, mockSortedList, dataKey, apiTick]);
 
   const topThree = useMemo(() => sortedList.slice(0, 3), [sortedList]);
   const trailingRows = useMemo(() => sortedList.slice(3), [sortedList]);
+
+  const error = isApiMode
+    ? (dataKey === 'topDepartments' ? apiDataManager.deptError : apiDataManager.commError)
+    : null;
 
   return {
     items: sortedList,
     topThree,
     trailingRows,
-    loading,
+    loading: false,
     error
   };
 }
