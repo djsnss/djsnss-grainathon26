@@ -11,7 +11,6 @@ const errorHandler = (err, _req, res, _next) => {
     message = err.message;
   }
 
-  // Log
   if (statusCode >= 500) {
     logger.error("Unhandled error", {
       error: err.message,
@@ -27,7 +26,6 @@ const errorHandler = (err, _req, res, _next) => {
     message,
   };
 
-  // Stack trace only in development
   if (process.env.NODE_ENV === "development") {
     response.stack = err.stack;
   }

@@ -1,26 +1,22 @@
 const donationService = require("../services/donation.service");
 const AppError = require("../utils/app-error");
 
-const buildResponse = (data, message) => ({
+const buildResponse = (data) => ({
   success: true,
   data,
-  ...(message && { message }),
   timestamp: new Date().toISOString(),
 });
 
 class DonationController {
   /**
-   * GET /day?day=1|2|3
+   * GET /api/day/:day  (day = 1, 2, or 3)
    */
   async getDayData(req, res, next) {
     try {
-      const day = Number(req.query.day);
+      const day = Number(req.params.day);
 
       if (![1, 2, 3].includes(day)) {
-        throw new AppError(
-          "Invalid or missing 'day' query param. Must be 1, 2, or 3.",
-          400,
-        );
+        throw new AppError("Invalid day. Must be 1, 2, or 3.", 400);
       }
 
       const data = await donationService.getDayData(day);
@@ -31,7 +27,7 @@ class DonationController {
   }
 
   /**
-   * GET /comm
+   * GET /api/committee
    */
   async getCommitteeData(req, res, next) {
     try {
@@ -43,7 +39,7 @@ class DonationController {
   }
 
   /**
-   * GET /total
+   * GET /api/total
    */
   async getTotalData(req, res, next) {
     try {
@@ -55,7 +51,7 @@ class DonationController {
   }
 
   /**
-   * GET /winning
+   * GET /api/winning
    */
   async getWinningData(req, res, next) {
     try {

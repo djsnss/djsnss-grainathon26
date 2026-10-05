@@ -5,9 +5,8 @@ const AppError = require("../utils/app-error");
 
 class DonationService {
   /**
-   * Parse department donation rows.
-   * Expected sheet format:  Header row → [Department, Amount]
-   *                         Data rows  → ["CSE", "5000"]
+   * Parse department rows.
+   * Row format: [Department, Amount] with header row at index 0.
    */
   parseDepartmentRows(rows) {
     if (!rows || rows.length <= 1) return [];
@@ -24,9 +23,8 @@ class DonationService {
   }
 
   /**
-   * Parse committee donation rows.
-   * Expected sheet format:  Header row → [Committee, Amount]
-   *                         Data rows  → ["Cultural", "6000"]
+   * Parse committee rows.
+   * Row format: [Committee, Amount] with header row at index 0.
    */
   parseCommitteeRows(rows) {
     if (!rows || rows.length <= 1) return [];
@@ -43,7 +41,7 @@ class DonationService {
   }
 
   /**
-   * GET /day?day=1|2|3
+   * GET /api/day/1 | /api/day/2 | /api/day/3
    */
   async getDayData(day) {
     const configMap = {
@@ -57,11 +55,7 @@ class DonationService {
       throw new AppError("Invalid day. Must be 1, 2, or 3.", 400);
     }
 
-    const rows = await googleSheetsService.getSheetData(
-      config.id,
-      config.range,
-    );
-
+    const rows = await googleSheetsService.getSheetData(config.range);
     const departments = this.parseDepartmentRows(rows);
     const total = departments.reduce((sum, d) => sum + d.amount, 0);
 
@@ -73,15 +67,11 @@ class DonationService {
   }
 
   /**
-   * GET /comm
+   * GET /api/committee
    */
   async getCommitteeData() {
     const config = sheetsConfig.committee;
-    const rows = await googleSheetsService.getSheetData(
-      config.id,
-      config.range,
-    );
-
+    const rows = await googleSheetsService.getSheetData(config.range);
     const committees = this.parseCommitteeRows(rows);
     const total = committees.reduce((sum, c) => sum + c.amount, 0);
 
@@ -93,7 +83,7 @@ class DonationService {
   }
 
   /**
-   * GET /total
+   * GET /api/total
    */
   async getTotalData() {
     const [day1, day2, day3, committee] = await Promise.all([
@@ -115,8 +105,8 @@ class DonationService {
   }
 
   /**
-   * GET /winning
-   * Department totals are aggregated across ALL 3 days.
+   * GET /api/winning
+   * Department totals aggregated across ALL 3 days.
    */
   async getWinningData() {
     const [day1, day2, day3, committeeData] = await Promise.all([
@@ -126,7 +116,7 @@ class DonationService {
       this.getCommitteeData(),
     ]);
 
-    // Aggregate department donations across all 3 days
+    // Aggregate department totals across 3 days
     const departmentMap = new Map();
 
     for (const dayData of [day1, day2, day3]) {

@@ -11,13 +11,19 @@ const getEnv = (key, defaultValue) => {
 };
 
 const env = Object.freeze({
-  port: Number(getEnv("PORT", "3000")),
+  port: Number(getEnv("PORT", "5000")),
   nodeEnv: getEnv("NODE_ENV", "development"),
-  googleSheetDay1: getEnv("GOOGLE_SHEET_DAY1"),
-  googleSheetDay2: getEnv("GOOGLE_SHEET_DAY2"),
-  googleSheetDay3: getEnv("GOOGLE_SHEET_DAY3"),
-  googleSheetCommittee: getEnv("GOOGLE_SHEET_COMMITTEE"),
-  googleSheetRange: getEnv("GOOGLE_SHEET_RANGE", "Sheet1!A:Z"),
+
+  // ONE spreadsheet ID
+  googleSpreadsheetId: getEnv("GOOGLE_SPREADSHEET_ID"),
+
+  // 4 tab names inside that spreadsheet
+  googleSheetDay1Name: getEnv("GOOGLE_SHEET_DAY1_NAME", "Day 1"),
+  googleSheetDay2Name: getEnv("GOOGLE_SHEET_DAY2_NAME", "Day 2"),
+  googleSheetDay3Name: getEnv("GOOGLE_SHEET_DAY3_NAME", "Day 3"),
+  googleSheetCommitteeName: getEnv("GOOGLE_SHEET_COMMITTEE_NAME", "Committee"),
+
+  googleSheetRange: getEnv("GOOGLE_SHEET_RANGE", "A:Z"),
   googleServiceAccountPath: getEnv(
     "GOOGLE_SERVICE_ACCOUNT_PATH",
     "./credentials/service-account.json",

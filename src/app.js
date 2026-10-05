@@ -10,14 +10,10 @@ const logger = require("./utils/logger");
 
 const app = express();
 
-// ─── Security & Performance Middleware ─────────────────────────
+// ─── Security & Performance ────────────────────────────────────
 
 app.use(helmet());
-app.use(
-  cors({
-    origin: env.nodeEnv === "production" ? "https://yourdomain.com" : "*",
-  }),
-);
+app.use(cors());
 app.use(compression());
 
 // Rate limiting
@@ -29,7 +25,7 @@ const limiter = rateLimit({
   message: {
     status: "fail",
     statusCode: 429,
-    message: "Too many requests — please try again later.",
+    message: "Too many requests — try again later.",
   },
 });
 app.use("/api", limiter);
@@ -50,7 +46,7 @@ if (env.nodeEnv === "development") {
 
 app.use("/api", routes);
 
-// 404 — unknown routes
+// 404
 app.use("*", (req, res) => {
   res.status(404).json({
     status: "fail",
@@ -59,7 +55,7 @@ app.use("*", (req, res) => {
   });
 });
 
-// Global error handler — must be LAST
+// Error handler — must be LAST
 app.use(errorHandler);
 
 logger.info(`App initialized in ${env.nodeEnv} mode`);

@@ -17,9 +17,11 @@ class GoogleSheetsService {
       });
 
       this.sheets = google.sheets({ version: "v4", auth });
+      this.spreadsheetId = env.googleSpreadsheetId;
+
       logger.info("✅ Google Sheets service authenticated successfully");
     } catch (error) {
-      logger.error("❌ Failed to authenticate Google Sheets service", {
+      logger.error("❌ Google Sheets auth failed", {
         error: error.message,
       });
       throw new AppError("Google Sheets authentication failed", 500, false);
@@ -27,29 +29,30 @@ class GoogleSheetsService {
   }
 
   /**
-   * Fetch raw data from a spreadsheet.
-   * Returns a 2D array of strings (rows x columns).
+   * Fetch data from ONE tab of the spreadsheet.
+   * @param {string} range - e.g. "Day 1!A:Z"
+   * @returns {Promise<string[][]>}
    */
-  async getSheetData(spreadsheetId, range) {
+  async getSheetData(range) {
     try {
-      logger.debug(`Fetching sheet → id: ${spreadsheetId} | range: ${range}`);
+      logger.debug(`Fetching range: ${range}`);
 
       const response = await this.sheets.spreadsheets.values.get({
-        spreadsheetId,
+        spreadsheetId: this.spreadsheetId,
         range,
       });
 
       const rows = response.data.values;
 
       if (!rows || rows.length === 0) {
-        logger.warn(`No data found in sheet: ${spreadsheetId}`);
+        logger.warn(`No data found for range: ${range}`);
         return [];
       }
 
-      logger.debug(`Fetched ${rows.length} rows from sheet: ${spreadsheetId}`);
+      logger.debug(`Fetched ${rows.length} rows from range: ${range}`);
       return rows;
     } catch (error) {
-      logger.error(`Error fetching sheet: ${spreadsheetId}`, {
+      logger.error(`Error fetching range: ${range}`, {
         error: error.message,
       });
       throw new AppError("Failed to fetch data from Google Sheets", 500, true);
@@ -57,7 +60,7 @@ class GoogleSheetsService {
   }
 }
 
-// Singleton — created once, reused everywhere
+// Singleton
 let instance = null;
 
 const getGoogleSheetsService = () => {

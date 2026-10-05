@@ -9,8 +9,10 @@ const server = app.listen(port, () => {
   logger.info(`📡 API → http://localhost:${port}/api`);
   logger.info(`❤️  Health → http://localhost:${port}/api/health`);
   logger.info(`📋 Routes:`);
-  logger.info(`   GET /api/day?day=1|2|3`);
-  logger.info(`   GET /api/comm`);
+  logger.info(`   GET /api/day/1`);
+  logger.info(`   GET /api/day/2`);
+  logger.info(`   GET /api/day/3`);
+  logger.info(`   GET /api/committee`);
   logger.info(`   GET /api/total`);
   logger.info(`   GET /api/winning`);
 });
@@ -20,13 +22,12 @@ const server = app.listen(port, () => {
 const gracefulShutdown = (signal) => {
   logger.info(`${signal} received. Shutting down gracefully...`);
   server.close(() => {
-    logger.info("✅ Server closed. All connections terminated.");
+    logger.info("✅ Server closed.");
     process.exit(0);
   });
 
-  // Force close after 10 seconds
   setTimeout(() => {
-    logger.error("⛔ Forced shutdown after 10s — connections still active.");
+    logger.error("⛔ Forced shutdown after 10s.");
     process.exit(1);
   }, 10_000);
 };

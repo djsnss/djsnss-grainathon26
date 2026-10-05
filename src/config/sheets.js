@@ -1,21 +1,27 @@
 const env = require("./env");
 
+/**
+ * One spreadsheet ID, 4 tabs inside.
+ * Range format for Google API: "TabName!A:Z"
+ */
 const sheetsConfig = Object.freeze({
+  spreadsheetId: env.googleSpreadsheetId,
+
   day1: {
-    id: env.googleSheetDay1,
-    range: env.googleSheetRange,
+    sheetName: env.googleSheetDay1Name,
+    range: `${env.googleSheetDay1Name}!${env.googleSheetRange}`,
   },
   day2: {
-    id: env.googleSheetDay2,
-    range: env.googleSheetRange,
+    sheetName: env.googleSheetDay2Name,
+    range: `${env.googleSheetDay2Name}!${env.googleSheetRange}`,
   },
   day3: {
-    id: env.googleSheetDay3,
-    range: env.googleSheetRange,
+    sheetName: env.googleSheetDay3Name,
+    range: `${env.googleSheetDay3Name}!${env.googleSheetRange}`,
   },
   committee: {
-    id: env.googleSheetCommittee,
-    range: env.googleSheetRange,
+    sheetName: env.googleSheetCommitteeName,
+    range: `${env.googleSheetCommitteeName}!${env.googleSheetRange}`,
   },
 });
 

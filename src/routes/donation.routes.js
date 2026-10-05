@@ -4,26 +4,28 @@ const donationController = require("../controllers/donation.controller");
 const router = Router();
 
 /**
- * @route   GET /day?day=1|2|3
+ * @route   GET /day/1
+ * @route   GET /day/2
+ * @route   GET /day/3
  * @desc    Fetch donation data for a specific day
  */
-router.get("/day", donationController.getDayData);
+router.get("/day/:day", donationController.getDayData);
 
 /**
- * @route   GET /comm
+ * @route   GET /committee
  * @desc    Fetch donation data collected by different committees
  */
-router.get("/comm", donationController.getCommitteeData);
+router.get("/committee", donationController.getCommitteeData);
 
 /**
  * @route   GET /total
- * @desc    Fetch the total donations across all available data
+ * @desc    Fetch total donations across all data
  */
 router.get("/total", donationController.getTotalData);
 
 /**
  * @route   GET /winning
- * @desc    Fetch the department and committee with the highest donation
+ * @desc    Fetch department & committee with highest donation
  */
 router.get("/winning", donationController.getWinningData);
 
