@@ -45,8 +45,8 @@ export default function ScorePlate({
   const dept = getDepartmentConfig(item.code || item.deptCode || item.dept || item.name);
 
   // Rank-based accents
-  const rankClass = rank === 1 ? styles.rankToken1 : rank === 2 ? styles.rankToken2 : styles.rankToken3;
-  const strokeColor = rank === 1 ? '#ffd166' : rank === 2 ? '#e2e8f0' : '#d08a5b';
+  const rankClass = rank === 1 ? styles.rankToken1 : rank === 2 ? styles.rankToken2 : rank === 3 ? styles.rankToken3 : styles.rankTokenNeutral;
+  const strokeColor = rank === 1 ? '#ffd166' : rank === 2 ? '#e2e8f0' : rank === 3 ? '#d08a5b' : '#3a4b4e';
 
 
 

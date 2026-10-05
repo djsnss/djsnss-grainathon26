@@ -1,6 +1,6 @@
 .screenBezelFrame {
   position: relative;
-  width: 710px;
+  width: 785px;
   height: 520px;
   background: linear-gradient(145deg, rgba(27, 20, 14, 0.75) 0%, rgba(13, 9, 6, 0.82) 100%);
   backdrop-filter: blur(4px);

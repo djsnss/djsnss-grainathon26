@@ -13,7 +13,10 @@ export default function SideControls({
   onTuningDragDelta,
   onTuningStep,
   isTuningInteractive = true,
-  isTuningInert = false
+  isTuningInert = false,
+  progress = 0,
+  pageTicks = ['A', 'B', 'C'],
+  pageTickAngles = CHANNEL_TICK_ANGLES
 }) {
   const [toggleState, setToggleState] = useState(false);
 
@@ -49,8 +52,9 @@ export default function SideControls({
           isInteractive={isTuningInteractive}
           isInert={isTuningInert}
           isTuning={isTuningInteractive}
-          ticks={['A', 'B', 'C']}
-          tickAngles={CHANNEL_TICK_ANGLES}
+          ticks={pageTicks}
+          tickAngles={pageTickAngles}
+          progress={progress}
           onTuningDragDelta={isTuningInteractive ? onTuningDragDelta : undefined}
           onTuningStep={isTuningInteractive ? onTuningStep : undefined}
         />

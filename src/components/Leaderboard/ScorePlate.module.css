@@ -51,6 +51,13 @@
   box-shadow: 0 0 10px var(--bronze-glow);
 }
 
+.rankTokenNeutral {
+  background: radial-gradient(circle at 35% 35%, #3a4b4e 0%, #1f2b2d 100%);
+  color: #92b5b8;
+  border: 1px solid rgba(146, 181, 184, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
 .platesContainer {
   position: relative;
   flex: 1;
@@ -93,9 +100,11 @@
 }
 
 .scorePlate {
-  width: 130px;
+  width: 150px;
+  padding: 0 12px;
   border-radius: 8px;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -156,12 +165,16 @@
 
 .itemScore {
   font-family: var(--font-mono);
-  font-size: var(--score-size, 1.75rem);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(0.95rem, 3.5vw, var(--score-size, 1.75rem));
   font-weight: 700;
   color: var(--neon-bright);
   text-shadow: 0 0 10px var(--neon-glow);
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   z-index: 2;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
 }
 
 .crownBadge {

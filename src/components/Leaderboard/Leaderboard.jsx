@@ -1,125 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLeaderboard } from '../../hooks/useLeaderboard';
 import ScreenTitle from './ScreenTitle';
 import ColumnHeaders from './ColumnHeaders';
 import ScorePlate from './ScorePlate';
-import TrailingRow from './TrailingRow';
-import { TUNING_MIN_ANGLE, TUNING_MAX_ANGLE, POINTER_REST_ANGLE } from '../../config/knobConfig';
-import { AUTO_SCROLL, ROTATION_INTERVAL_MS } from '../../config/channelConfig';
 import styles from './Leaderboard.module.css';
 
 export default function Leaderboard({
   channel,
-  scrollContainerRef,
-  tuningAngleMV,
-  isStatic = false,
-  userInteracted = false,
-  onUserInteraction
+  pageIndex = 0,
+  onSelectPage,
+  isStatic = false
 }) {
   const { tapeLabel, leftHeader, rightHeader, dataKey } = channel;
-  const { topThree, trailingRows } = useLeaderboard(dataKey);
+  const { items, topThree } = useLeaderboard(dataKey);
 
-  const localScrollRef = useRef(null);
-  const scrollRef = scrollContainerRef || localScrollRef;
-
-  const [showIndicator, setShowIndicator] = useState(false);
-  const [thumbTop, setThumbTop] = useState(0);
-  const [thumbHeight, setThumbHeight] = useState(30);
-  const idleTimerRef = useRef(null);
-  const isUserScrollingRef = useRef(false);
-
-  // Reset scroll to top on channel change and check scrollability
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
-      const el = scrollRef.current;
-      const isScrollable = el.scrollHeight > el.clientHeight;
-      if (!isScrollable) {
-        setShowIndicator(false);
-      }
-    }
-    if (tuningAngleMV) {
-      tuningAngleMV.set(TUNING_MIN_ANGLE - POINTER_REST_ANGLE);
-    }
-  }, [channel.id, scrollRef, tuningAngleMV]);
-
-  // Smooth AUTO_SCROLL effect across channel dwell time (disabled when user interacts or content fits)
-  useEffect(() => {
-    if (isStatic || !AUTO_SCROLL || userInteracted) return;
-
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const maxScroll = el.scrollHeight - el.clientHeight;
-    if (maxScroll <= 0) return;
-
-    let animationFrameId;
-    let startTime = null;
-    const duration = Math.max(3000, ROTATION_INTERVAL_MS - 1500);
-
-    const step = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(1, elapsed / duration);
-
-      if (scrollRef.current && !isUserScrollingRef.current) {
-        scrollRef.current.scrollTop = progress * maxScroll;
-      }
-
-      if (progress < 1 && !isUserScrollingRef.current) {
-        animationFrameId = requestAnimationFrame(step);
-      }
-    };
-
-    const timer = setTimeout(() => {
-      animationFrameId = requestAnimationFrame(step);
-    }, 600);
-
-    return () => {
-      clearTimeout(timer);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    };
-  }, [channel.id, isStatic, userInteracted, scrollRef]);
-
-  const handleScroll = (e) => {
-    const el = e.currentTarget;
-    const maxScroll = el.scrollHeight - el.clientHeight;
-
-    // Detect user manual scroll interaction
-    if (e.isTrusted && !userInteracted) {
-      isUserScrollingRef.current = true;
-      onUserInteraction?.();
-    }
-
-    if (maxScroll <= 0) {
-      if (showIndicator) setShowIndicator(false);
-      return;
-    }
-
-    const p = Math.max(0, Math.min(1, el.scrollTop / maxScroll));
-
-    // Synchronize tuning knob angle via motion value without React re-renders
-    if (tuningAngleMV) {
-      const targetAngle = TUNING_MIN_ANGLE + p * (TUNING_MAX_ANGLE - TUNING_MIN_ANGLE) - POINTER_REST_ANGLE;
-      tuningAngleMV.set(targetAngle);
-    }
-
-    // CRT Scroll Indicator logic (fades out after 1.5s idle)
-    setShowIndicator(true);
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    idleTimerRef.current = setTimeout(() => {
-      setShowIndicator(false);
-    }, 1500);
-
-    // Compute scrollbar thumb dimensions
-    const containerH = el.clientHeight;
-    const calculatedHeight = Math.max(20, (containerH / el.scrollHeight) * containerH);
-    const calculatedTop = (el.scrollTop / maxScroll) * (containerH - calculatedHeight);
-    setThumbHeight(calculatedHeight);
-    setThumbTop(calculatedTop);
-  };
-
-  // Hero static mode for Page "/" (CH1 top 3 plates centered vertically, no scroll area)
+  // Hero static mode for Page "/" (CH1 top 3 static podium, no pagination)
   if (isStatic) {
     const leaderScore = topThree[0]?.score || 1250;
     return (
@@ -130,7 +26,7 @@ export default function Leaderboard({
         <div className={styles.heroContainer}>
           {topThree.map((item, index) => (
             <ScorePlate
-              key={item.id || index}
+              key={item.id || item.code || item.name || index}
               item={item}
               rank={item.rank}
               delay={index + 1}
@@ -143,7 +39,11 @@ export default function Leaderboard({
     );
   }
 
-  // Interactive / Rotating mode for Page "/live" (CH2 / CH3)
+  // Interactive / Rotating mode for Page "/live" (CH2 / CH3 Paginated 3 Items/Page)
+  const totalPages = Math.max(1, Math.ceil(items.length / 3));
+  const safePageIndex = Math.min(pageIndex, totalPages - 1);
+  const pageItems = items.slice(safePageIndex * 3, (safePageIndex + 1) * 3);
+
   return (
     <div className={styles.leaderboardContainer} aria-live="polite">
       {/* Title & Channel Tape Label (Fixed Header) */}
@@ -152,52 +52,43 @@ export default function Leaderboard({
       {/* Column Headers (Fixed Header) */}
       <ColumnHeaders leftHeader={leftHeader} rightHeader={rightHeader} />
 
-      {/* Scrollable Container Wrapper with CRT Scroll Indicator */}
-      <div className={styles.scrollWrapper}>
-        <div
-          className={styles.scrollArea}
-          ref={scrollRef}
-          onScroll={handleScroll}
-          onWheel={() => { onUserInteraction?.(); }}
-          onTouchMove={() => { onUserInteraction?.(); }}
-          tabIndex={0}
-          aria-label="Leaderboard List"
-        >
-          {/* Top 3 Score Plates */}
-          <div className={styles.topSection}>
-            {topThree.map((item, index) => (
+      {/* Paginated Content Area */}
+      <div className={styles.pagedWrapper}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${channel.id}-page-${safePageIndex}`}
+            className={styles.pagedPlatesContainer}
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -15 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+          >
+            {pageItems.map((item, index) => (
               <ScorePlate
-                key={item.id || index}
+                key={item.id || item.code || item.name || index}
                 item={item}
                 rank={item.rank}
                 delay={index + 1}
                 isHero={false}
               />
             ))}
-          </div>
+          </motion.div>
+        </AnimatePresence>
 
-          {/* Trailing Rows (Ranks 4 to 15) */}
-          <div className={styles.trailingSection}>
-            {trailingRows.map((item, index) => (
-              <TrailingRow
-                key={item.id || index}
-                item={item}
-                index={index}
+        {/* Small Page Dots Indicator */}
+        {totalPages > 1 && (
+          <div className={styles.dotsContainer}>
+            {Array.from({ length: totalPages }).map((_, pIdx) => (
+              <button
+                key={pIdx}
+                type="button"
+                className={`${styles.pageDot} ${pIdx === safePageIndex ? styles.activeDot : ''}`}
+                onClick={() => onSelectPage?.(pIdx)}
+                aria-label={`Go to page ${pIdx + 1}`}
               />
             ))}
           </div>
-        </div>
-
-        {/* Thin Mint CRT-Style Scroll Indicator */}
-        <div className={`${styles.scrollTrack} ${showIndicator ? styles.visible : ''}`}>
-          <div
-            className={styles.scrollThumb}
-            style={{
-              height: `${thumbHeight}px`,
-              transform: `translateY(${thumbTop}px)`
-            }}
-          />
-        </div>
+        )}
       </div>
     </div>
   );

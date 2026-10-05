@@ -17,12 +17,24 @@ export default function TV({
   isTuningInert = false,
   isStaticActive,
   channelCode,
-  onUserInteraction
+  onUserInteraction,
+  progress = 0,
+  pageTicks,
+  pageTickAngles,
+  onTuningStep
 }) {
   const containerRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const tuningAngleMV = useMotionValue(TUNING_MIN_ANGLE - POINTER_REST_ANGLE);
   const [scale, setScale] = useState(1);
+
+  // Sync tuning angle motion value whenever progress changes
+  useEffect(() => {
+    if (isTuningInteractive && tuningAngleMV) {
+      const targetAngle = TUNING_MIN_ANGLE + progress * (TUNING_MAX_ANGLE - TUNING_MIN_ANGLE) - POINTER_REST_ANGLE;
+      tuningAngleMV.set(targetAngle);
+    }
+  }, [progress, isTuningInteractive, tuningAngleMV]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,6 +58,12 @@ export default function TV({
   const handleTuningDragDelta = (delta) => {
     if (!isTuningInteractive || isTuningInert) return;
     onUserInteraction?.();
+    if (onTuningStep) {
+      if (Math.abs(delta) > 10) {
+        onTuningStep(delta > 0 ? 1 : -1);
+      }
+      return;
+    }
     const el = scrollContainerRef.current;
     if (!el) return;
     const maxScroll = el.scrollHeight - el.clientHeight;
@@ -73,6 +91,10 @@ export default function TV({
   const handleTuningStep = (direction) => {
     if (!isTuningInteractive || isTuningInert) return;
     onUserInteraction?.();
+    if (onTuningStep) {
+      onTuningStep(direction);
+      return;
+    }
     const el = scrollContainerRef.current;
     if (!el) return;
     const rowHeight = 36;
@@ -105,6 +127,9 @@ export default function TV({
             onTuningStep={handleTuningStep}
             isTuningInteractive={isTuningInteractive}
             isTuningInert={isTuningInert}
+            progress={progress}
+            pageTicks={pageTicks}
+            pageTickAngles={pageTickAngles}
           />
         </TVCabinet>
       </div>
