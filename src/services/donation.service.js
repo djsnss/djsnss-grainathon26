@@ -1,48 +1,95 @@
 const googleSheetsService = require("./google-sheets.service");
 const sheetsConfig = require("../config/sheets");
+const env = require("../config/env");
 const logger = require("../utils/logger");
 const AppError = require("../utils/app-error");
 
 class DonationService {
-  /**
-   * Parse department rows.
-   * Row format: [Department, Amount] with header row at index 0.
-   */
-  parseDepartmentRows(rows) {
-    if (!rows || rows.length <= 1) return [];
-
-    return rows.slice(1).reduce((acc, row) => {
-      const department = row[0]?.trim();
-      const amount = parseFloat(row[1]);
-
-      if (department && !isNaN(amount) && amount >= 0) {
-        acc.push({ department, amount });
-      }
-      return acc;
-    }, []);
+  buildDefaultDepartmentMap() {
+    const map = {};
+    for (const dept of env.defaultDepartments) {
+      map[dept] = 0;
+    }
+    return map;
   }
 
-  /**
-   * Parse committee rows.
-   * Row format: [Committee, Amount] with header row at index 0.
-   */
+  findColumnIndex(headerRow, expectedName) {
+    if (!headerRow || headerRow.length === 0) return -1;
+    return headerRow.findIndex(
+      (col) => col.trim().toLowerCase() === expectedName.trim().toLowerCase(),
+    );
+  }
+
+  parseDayRows(rows) {
+    const result = this.buildDefaultDepartmentMap();
+
+    if (!rows || rows.length <= 1) return result;
+
+    const headerRow = rows[0];
+    const deptIdx = this.findColumnIndex(headerRow, env.departmentColumn);
+    const qtyIdx = this.findColumnIndex(headerRow, env.quantityColumn);
+
+    if (deptIdx === -1 || qtyIdx === -1) {
+      logger.warn(
+        `Column headers not found. Expected: "${env.departmentColumn}" and "${env.quantityColumn}". Found: ${JSON.stringify(headerRow)}`,
+      );
+      return result;
+    }
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const name = row[deptIdx]?.trim().toUpperCase();
+      const amount = parseFloat(row[qtyIdx]);
+
+      if (name && !isNaN(amount) && amount >= 0) {
+        result[name] = (result[name] || 0) + amount;
+      }
+    }
+
+    return result;
+  }
+
   parseCommitteeRows(rows) {
-    if (!rows || rows.length <= 1) return [];
+    const result = {
+      committeesByDept: {},
+      allCommittees: {},
+    };
 
-    return rows.slice(1).reduce((acc, row) => {
-      const committee = row[0]?.trim();
-      const amount = parseFloat(row[1]);
+    if (!rows || rows.length <= 1) return result;
 
-      if (committee && !isNaN(amount) && amount >= 0) {
-        acc.push({ committee, amount });
+    const headerRow = rows[0];
+    const deptIdx = this.findColumnIndex(headerRow, env.departmentColumn);
+    const commIdx = this.findColumnIndex(headerRow, env.committeeColumn);
+    const qtyIdx = this.findColumnIndex(headerRow, env.quantityColumn);
+
+    if (deptIdx === -1 || commIdx === -1 || qtyIdx === -1) {
+      logger.warn(
+        `Column headers not found in committee sheet. Expected: "${env.departmentColumn}", "${env.committeeColumn}", "${env.quantityColumn}". Found: ${JSON.stringify(headerRow)}`,
+      );
+      return result;
+    }
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const deptName = row[deptIdx]?.trim().toUpperCase();
+      const commName = row[commIdx]?.trim();
+      const amount = parseFloat(row[qtyIdx]);
+
+      if (!deptName || !commName || isNaN(amount) || amount < 0) continue;
+
+      if (!result.committeesByDept[deptName]) {
+        result.committeesByDept[deptName] = {};
       }
-      return acc;
-    }, []);
+      result.committeesByDept[deptName][commName] =
+        (result.committeesByDept[deptName][commName] || 0) + amount;
+
+      result.allCommittees[commName] =
+        (result.allCommittees[commName] || 0) + amount;
+    }
+
+    return result;
   }
 
-  /**
-   * GET /api/day/1 | /api/day/2 | /api/day/3
-   */
   async getDayData(day) {
     const configMap = {
       1: sheetsConfig.day1,
@@ -56,113 +103,87 @@ class DonationService {
     }
 
     const rows = await googleSheetsService.getSheetData(config.range);
-    const departments = this.parseDepartmentRows(rows);
-    const total = departments.reduce((sum, d) => sum + d.amount, 0);
+    const data = this.parseDayRows(rows);
 
-    logger.info(
-      `Day ${day} → ${departments.length} departments, total: ₹${total}`,
-    );
+    logger.info(`Day ${day} data fetched successfully`);
 
-    return { day, departments, total };
+    return data;
   }
 
-  /**
-   * GET /api/committee
-   */
   async getCommitteeData() {
     const config = sheetsConfig.committee;
     const rows = await googleSheetsService.getSheetData(config.range);
-    const committees = this.parseCommitteeRows(rows);
-    const total = committees.reduce((sum, c) => sum + c.amount, 0);
+    const { allCommittees, committeesByDept } = this.parseCommitteeRows(rows);
 
-    logger.info(
-      `Committee → ${committees.length} committees, total: ₹${total}`,
-    );
+    logger.info("Committee data fetched successfully");
 
-    return { committees, total };
+    return (allCommittees, committeesByDept);
   }
 
-  /**
-   * GET /api/total
-   */
-  async getTotalData() {
-    const [day1, day2, day3, committee] = await Promise.all([
+  async getAggregatedDepartments() {
+    const [day1, day2, day3] = await Promise.all([
       this.getDayData(1),
       this.getDayData(2),
       this.getDayData(3),
-      this.getCommitteeData(),
     ]);
 
-    const grandTotal = day1.total + day2.total + day3.total + committee.total;
-
-    logger.info(`Grand total: ₹${grandTotal}`);
-
-    return {
-      days: [day1, day2, day3],
-      committee,
-      grandTotal,
-    };
-  }
-
-  /**
-   * GET /api/winning
-   * Department totals aggregated across ALL 3 days.
-   */
-  async getWinningData() {
-    const [day1, day2, day3, committeeData] = await Promise.all([
-      this.getDayData(1),
-      this.getDayData(2),
-      this.getDayData(3),
-      this.getCommitteeData(),
-    ]);
-
-    // Aggregate department totals across 3 days
-    const departmentMap = new Map();
+    const totalDepartments = this.buildDefaultDepartmentMap();
 
     for (const dayData of [day1, day2, day3]) {
-      for (const dept of dayData.departments) {
-        const existing = departmentMap.get(dept.department) ?? 0;
-        departmentMap.set(dept.department, existing + dept.amount);
+      for (const [dept, amount] of Object.entries(dayData)) {
+        totalDepartments[dept] = (totalDepartments[dept] || 0) + amount;
       }
     }
 
-    if (departmentMap.size === 0) {
-      throw new AppError("No department donation data available", 404);
+    const config = sheetsConfig.committee;
+    const committeeRows = await googleSheetsService.getSheetData(config.range);
+    const { committeesByDept } = this.parseCommitteeRows(committeeRows);
+
+    for (const [dept, committees] of Object.entries(committeesByDept)) {
+      const committeeTotal = Object.values(committees).reduce(
+        (sum, qty) => sum + qty,
+        0,
+      );
+      totalDepartments[dept] = (totalDepartments[dept] || 0) + committeeTotal;
     }
 
-    // Find winning department
+    return { totalDepartments, committeesByDept };
+  }
+
+  async getTotalData() {
+    const { totalDepartments } = await this.getAggregatedDepartments();
+
+    logger.info("Total data fetched successfully");
+
+    return totalDepartments;
+  }
+
+  async getWinningData() {
+    const { totalDepartments, committeesByDept } =
+      await this.getAggregatedDepartments();
+
     let winningDeptName = "";
     let winningDeptAmount = 0;
 
-    for (const [name, amount] of departmentMap) {
+    for (const [name, amount] of Object.entries(totalDepartments)) {
       if (amount > winningDeptAmount) {
         winningDeptName = name;
         winningDeptAmount = amount;
       }
     }
 
-    // Find winning committee
-    if (committeeData.committees.length === 0) {
-      throw new AppError("No committee donation data available", 404);
-    }
-
-    const winningCommittee = committeeData.committees.reduce((prev, curr) =>
-      curr.amount > prev.amount ? curr : prev,
-    );
+    const winningCommittees = committeesByDept[winningDeptName] || {};
 
     const result = {
       department: {
         name: winningDeptName,
-        amount: winningDeptAmount,
+        quantity: winningDeptAmount,
       },
-      committee: {
-        name: winningCommittee.committee,
-        amount: winningCommittee.amount,
-      },
+      committees: winningCommittees,
     };
 
     logger.info(
-      `🏆 Winning → Dept: ${result.department.name} (₹${result.department.amount}) | Committee: ${result.committee.name} (₹${result.committee.amount})`,
+      `🏆 Winning → Dept: ${result.department.name} (${result.department.quantity} kg) with ${Object.keys(result.committees).length} committees`,
     );
 
     return result;

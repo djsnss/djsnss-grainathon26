@@ -12,19 +12,12 @@ const errorHandler = (err, _req, res, _next) => {
   }
 
   if (statusCode >= 500) {
-    logger.error("Unhandled error", {
-      error: err.message,
-      stack: err.stack,
-    });
+    logger.error("Unhandled error", { error: err.message, stack: err.stack });
   } else {
     logger.warn(`Operational error: ${message}`, { statusCode });
   }
 
-  const response = {
-    status,
-    statusCode,
-    message,
-  };
+  const response = { status, statusCode, message };
 
   if (process.env.NODE_ENV === "development") {
     response.stack = err.stack;

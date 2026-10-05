@@ -17,15 +17,12 @@ const server = app.listen(port, () => {
   logger.info(`   GET /api/winning`);
 });
 
-// ─── Graceful Shutdown ─────────────────────────────────────────
-
 const gracefulShutdown = (signal) => {
   logger.info(`${signal} received. Shutting down gracefully...`);
   server.close(() => {
     logger.info("✅ Server closed.");
     process.exit(0);
   });
-
   setTimeout(() => {
     logger.error("⛔ Forced shutdown after 10s.");
     process.exit(1);

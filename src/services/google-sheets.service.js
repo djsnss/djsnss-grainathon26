@@ -29,7 +29,7 @@ class GoogleSheetsService {
   }
 
   /**
-   * Fetch data from ONE tab of the spreadsheet.
+   * Fetch data from one tab of the spreadsheet.
    * @param {string} range - e.g. "Day 1!A:Z"
    * @returns {Promise<string[][]>}
    */
@@ -60,7 +60,6 @@ class GoogleSheetsService {
   }
 }
 
-// Singleton
 let instance = null;
 
 const getGoogleSheetsService = () => {

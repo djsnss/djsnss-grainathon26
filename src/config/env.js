@@ -14,10 +14,8 @@ const env = Object.freeze({
   port: Number(getEnv("PORT", "5000")),
   nodeEnv: getEnv("NODE_ENV", "development"),
 
-  // ONE spreadsheet ID
   googleSpreadsheetId: getEnv("GOOGLE_SPREADSHEET_ID"),
 
-  // 4 tab names inside that spreadsheet
   googleSheetDay1Name: getEnv("GOOGLE_SHEET_DAY1_NAME", "Day 1"),
   googleSheetDay2Name: getEnv("GOOGLE_SHEET_DAY2_NAME", "Day 2"),
   googleSheetDay3Name: getEnv("GOOGLE_SHEET_DAY3_NAME", "Day 3"),
@@ -28,6 +26,18 @@ const env = Object.freeze({
     "GOOGLE_SERVICE_ACCOUNT_PATH",
     "./credentials/service-account.json",
   ),
+
+  // Configurable column header names
+  departmentColumn: getEnv("GOOGLE_DEPARTMENT_COLUMN", "DEPARTMENT"),
+  quantityColumn: getEnv("GOOGLE_QUANTITY_COLUMN", "QUANTITY (In Kg)"),
+  committeeColumn: getEnv("GOOGLE_COMMITTEE_COLUMN", "COMMITTEE NAME"),
+
+  // Default departments list
+  defaultDepartments: getEnv(
+    "DEFAULT_DEPARTMENTS",
+    "AIDS,AIML,COMPS,CSEDS,EXTC,ICB,IT,MECH,OTHER",
+  ).split(","),
+
   rateLimitWindowMs: Number(getEnv("RATE_LIMIT_WINDOW_MS", "900000")),
   rateLimitMax: Number(getEnv("RATE_LIMIT_MAX", "100")),
 });

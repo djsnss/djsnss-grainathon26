@@ -1,9 +1,5 @@
 const env = require("./env");
 
-/**
- * One spreadsheet ID, 4 tabs inside.
- * Range format for Google API: "TabName!A:Z"
- */
 const sheetsConfig = Object.freeze({
   spreadsheetId: env.googleSpreadsheetId,
 
