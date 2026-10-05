@@ -49,6 +49,19 @@ class DonationController {
       next(error);
     }
   }
+
+  async getTotalCount(req, res, next) {
+    try {
+      const totals = await donationService.getTotalData();
+      const total = Object.values(totals).reduce(
+        (sum, amount) => sum + Number(amount || 0),
+        0
+      );
+      res.status(200).json({ "Total" : total });
+    }catch(error){
+      next(error);
+    }
+  }
 }
 
 module.exports = new DonationController();
