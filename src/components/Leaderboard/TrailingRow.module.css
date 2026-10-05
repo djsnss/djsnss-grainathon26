@@ -3,8 +3,9 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 4px 12px;
-  margin-bottom: 4px;
+  height: var(--row-height, 38px);
+  padding: 0 12px;
+  margin-bottom: 3px;
   border-radius: 4px;
   background: rgba(8, 28, 30, 0.82);
   transition: background 0.15s ease;
@@ -17,17 +18,17 @@
 
 .rankBadge {
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: var(--row-size, 1.25rem);
   font-weight: 700;
   color: var(--label-text);
-  width: 24px;
+  width: 30px;
   opacity: 0.85;
   flex-shrink: 0;
 }
 
 .rowName {
   font-family: var(--font-screen);
-  font-size: 0.95rem;
+  font-size: var(--row-size, 1.25rem);
   font-weight: 600;
   color: #e2e8f0;
   white-space: nowrap;
@@ -35,7 +36,6 @@
   text-overflow: ellipsis;
   flex-shrink: 1;
   min-width: 0;
-  max-width: 260px;
 }
 
 .deptBadgeWrapper {
@@ -54,8 +54,9 @@
 
 .rowScore {
   font-family: var(--font-mono);
-  font-size: 1.05rem;
+  font-size: var(--row-size, 1.25rem);
   font-weight: 700;
   color: var(--neon);
   letter-spacing: 1px;
+  flex-shrink: 0;
 }

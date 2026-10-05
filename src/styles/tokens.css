@@ -43,6 +43,12 @@
   --tv-shadow-opacity: 0.1;
   --tv-scale: 0.9;
 
+  /* Distance Viewing Typography & Row Heights */
+  --name-size: 1.4rem;
+  --score-size: 1.75rem;
+  --row-size: 1.25rem;
+  --row-height: 38px;
+
   /* Typography */
   --title-size: 1.95rem;
   --subtitle-size: 1.35rem;

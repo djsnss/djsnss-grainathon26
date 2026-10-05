@@ -15,12 +15,15 @@ export const leaderboardData = {
     { id: 9, code: 'OTHER', name: 'OTHER', score: 310 }
   ],
   topCommittees: [
-    { id: 1, name: 'Rotaract Club NSS', score: 980 },
-    { id: 2, name: 'ACM Student Chapter', score: 890 },
-    { id: 3, name: 'IEEE DJ Sanghvi', score: 810 },
-    { id: 4, name: 'E-Cell DJCE', score: 720 },
-    { id: 5, name: 'CSI Student Branch', score: 650 },
-    { id: 6, name: 'NSS Cultural Wing', score: 580 }
+    { id: 1, name: 'DJS ACM', score: 980 },
+    { id: 2, name: 'DJS CSI', score: 890 },
+    { id: 3, name: 'DJS GDG', score: 810 },
+    { id: 4, name: 'DJS SAE', score: 720 },
+    { id: 5, name: 'DJS MUNSOC', score: 650 },
+    { id: 6, name: 'DJS Beats', score: 580 },
+    { id: 7, name: 'DJS Express', score: 490 },
+    { id: 8, name: 'DJS S4DS', score: 380 }
+    // Remaining committees (DJS IETE, DJS ISACA, DJS LITSOC, DJS Dhadak, DJS Aura, DJS Antariksh) are omitted to verify score 0 fallback
   ],
   topDonors: [
     { id: 1, name: 'Siddharth Mehta', score: 5000 },

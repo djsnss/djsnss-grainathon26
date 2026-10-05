@@ -121,7 +121,7 @@
 
 .itemName {
   font-family: var(--font-screen);
-  font-size: 1.1rem;
+  font-size: var(--name-size, 1.4rem);
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 1px;
@@ -134,7 +134,7 @@
 
 .deptShowSubtitle {
   font-family: var(--font-screen, sans-serif);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: rgba(92, 242, 200, 0.75);
   text-transform: uppercase;
@@ -142,7 +142,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 2px;
+  margin-top: 1px;
   line-height: 1.1;
 }
 
@@ -156,7 +156,7 @@
 
 .itemScore {
   font-family: var(--font-mono);
-  font-size: 1.35rem;
+  font-size: var(--score-size, 1.75rem);
   font-weight: 700;
   color: var(--neon-bright);
   text-shadow: 0 0 10px var(--neon-glow);
@@ -239,7 +239,7 @@
 }
 
 .heroItemName {
-  font-size: 1.2rem;
+  font-size: var(--name-size, 1.4rem);
   font-weight: 750;
   color: #ffffff;
   letter-spacing: 1px;
@@ -248,7 +248,7 @@
 }
 
 .heroShowSubtitle {
-  font-size: 0.66rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: rgba(92, 242, 200, 0.9);
   text-transform: uppercase;
@@ -258,7 +258,7 @@
 }
 
 .heroItemScore {
-  font-size: 1.45rem;
+  font-size: var(--score-size, 1.75rem);
   font-weight: 800;
   color: var(--neon-bright);
   text-shadow: 0 0 12px var(--neon-glow);
