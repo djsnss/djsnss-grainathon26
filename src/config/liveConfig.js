@@ -1,7 +1,7 @@
 // Configuration for auto-rotation and live display behavior
 export const LIVE_CONFIG = {
   // Flag to enable or disable automatic channel switching (true = switch between channels)
-  ENABLE_CHANNEL_SWITCHING: true,
+  ENABLE_CHANNEL_SWITCHING: false,
 
   // Flag to enable or disable automatic page rotation (true = rotate pages on the current channel)
   ENABLE_PAGE_ROTATION: true,
