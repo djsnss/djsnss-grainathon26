@@ -11,7 +11,7 @@ export const API_BASE = (import.meta.env.VITE_API_URL || '')
 
 // Endpoints for total department scores and committee scores
 export const ENDPOINTS = {
-  departments: '/api/day/1',
+  departments: '/api/day/2',
   committees: '/api/committee'
 };
 
